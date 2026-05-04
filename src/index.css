@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+[data-theme='dark'] {
+  --color-bg: 11 13 16;
+  --color-panel: 17 21 26;
+  --color-border: 31 36 44;
+  --color-muted: 125 133 144;
+  --color-text: 230 237 243;
+  --color-accent: 126 231 135;
+  --color-warn: 240 180 41;
+  --color-error: 255 107 107;
+  --color-ok: 63 185 80;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --color-bg: 246 247 249;
+  --color-panel: 255 255 255;
+  --color-border: 217 222 230;
+  --color-muted: 110 119 129;
+  --color-text: 31 35 40;
+  --color-accent: 31 136 61;
+  --color-warn: 154 103 0;
+  --color-error: 207 34 46;
+  --color-ok: 31 136 61;
+  color-scheme: light;
+}
+
+@layer components {
+  .shiki-host pre {
+    background: transparent !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    font-family:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  }
+
+  .markdown p {
+    margin-bottom: 0.75rem;
+  }
+  .markdown p:last-child {
+    margin-bottom: 0;
+  }
+  .markdown h1,
+  .markdown h2,
+  .markdown h3 {
+    font-weight: 600;
+    margin-top: 0.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .markdown h1 {
+    font-size: 1.125rem;
+  }
+  .markdown h2 {
+    font-size: 1rem;
+  }
+  .markdown h3 {
+    font-size: 0.95rem;
+  }
+  .markdown ul,
+  .markdown ol {
+    padding-left: 1.25rem;
+    margin-bottom: 0.75rem;
+  }
+  .markdown ul {
+    list-style: disc;
+  }
+  .markdown ol {
+    list-style: decimal;
+  }
+  .markdown code {
+    background-color: rgba(255, 255, 255, 0.06);
+    padding: 0.05rem 0.3rem;
+    border-radius: 3px;
+    font-size: 0.9em;
+  }
+  .markdown pre code {
+    background-color: transparent;
+    padding: 0;
+  }
+  .markdown strong {
+    color: theme('colors.accent');
+    font-weight: 600;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  font-family:
+    ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
