@@ -87,6 +87,32 @@
   }
 }
 
+@keyframes race-shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 50%, 90% { transform: translateX(-6px); }
+  30%, 70% { transform: translateX(6px); }
+}
+.animate-race-shake {
+  animation: race-shake 0.4s ease-in-out both;
+}
+
+@keyframes race-count-pop {
+  0% { transform: scale(0.4); opacity: 0; }
+  30% { transform: scale(1.15); opacity: 1; }
+  100% { transform: scale(1); opacity: 1; }
+}
+.animate-race-count-pop {
+  animation: race-count-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes race-correct-glow {
+  0% { box-shadow: 0 0 0 0 rgb(var(--color-accent) / 0.55); }
+  100% { box-shadow: 0 0 0 14px rgb(var(--color-accent) / 0); }
+}
+.animate-race-correct-glow {
+  animation: race-correct-glow 0.6s ease-out both;
+}
+
 html,
 body,
 #root {

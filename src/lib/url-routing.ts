@@ -3,6 +3,7 @@ import type { Problem } from '../types/problem';
 
 const PATH_PREFIX = '/p/';
 const HASH_PREFIX = '#/p/';
+const RACE_PREFIX = '/race';
 
 export function parseChallengeId(): string | null {
   if (typeof window === 'undefined') return null;
@@ -40,4 +41,48 @@ export function clearChallengeHash(): void {
   // challenge mode (path or hash).
   if (typeof window === 'undefined') return;
   window.history.replaceState(null, '', '/');
+}
+
+export type RaceRoute =
+  | { kind: 'list' }
+  | { kind: 'set'; setId: string; vsTimeMs: number | null };
+
+export function parseRaceRoute(): RaceRoute | null {
+  if (typeof window === 'undefined') return null;
+  const path = window.location.pathname.replace(/\/$/, '');
+  if (path === RACE_PREFIX) return { kind: 'list' };
+  if (path.startsWith(`${RACE_PREFIX}/`)) {
+    const setId = path.slice(RACE_PREFIX.length + 1);
+    if (!setId) return { kind: 'list' };
+    const vsParam = new URLSearchParams(window.location.search).get('vs');
+    const vsTimeMs = vsParam ? parseVsTime(vsParam) : null;
+    return { kind: 'set', setId, vsTimeMs };
+  }
+  return null;
+}
+
+function parseVsTime(raw: string): number | null {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || n <= 0) return null;
+  return Math.round(n);
+}
+
+export function buildRaceShareUrl(setId: string, timeMs: number): string {
+  const path = `${RACE_PREFIX}/${setId}?vs=${timeMs}`;
+  if (typeof window === 'undefined') return path;
+  return `${window.location.origin}${path}`;
+}
+
+export function navigateRace(setId: string | null): void {
+  if (typeof window === 'undefined') return;
+  const url = setId ? `${RACE_PREFIX}/${setId}` : RACE_PREFIX;
+  window.history.pushState(null, '', url);
+  // pushState doesn't fire popstate; emit a custom event the App listens for.
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}
+
+export function navigateHome(): void {
+  if (typeof window === 'undefined') return;
+  window.history.pushState(null, '', '/');
+  window.dispatchEvent(new PopStateEvent('popstate'));
 }

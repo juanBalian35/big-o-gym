@@ -3,11 +3,7 @@ import { problems } from '../data/problems';
 import type { Language, Problem } from '../types/problem';
 import type { Attempt } from '../types/attempt';
 import { selectNextProblem } from '../lib/problem-selection';
-import {
-  loadPreferredLanguage,
-  savePreferredLanguage,
-  saveAttempt,
-} from '../lib/storage';
+import { loadAttempts, saveAttempt } from '../lib/storage';
 import {
   classifyAnswer,
   type ClassificationResult,
@@ -30,6 +26,13 @@ export interface SubmissionResult {
 }
 
 const EASY_RAMP_COUNT = 2;
+
+function attemptAllCorrect(a: Attempt): boolean {
+  return (
+    a.time_result === 'correct' &&
+    (a.space_result === null || a.space_result === 'correct')
+  );
+}
 
 interface PickResult {
   problem: Problem;
@@ -119,11 +122,7 @@ function specsFor(problem: Problem): FieldSpec[] {
   return specs;
 }
 
-export function useProblemFlow() {
-  const [language, setLanguageState] = useState<Language>(() =>
-    loadPreferredLanguage()
-  );
-
+export function useProblemFlow(language: Language) {
   const [initialChallenge] = useState<Problem | null>(() =>
     findChallengeProblem()
   );
@@ -148,6 +147,9 @@ export function useProblemFlow() {
     []
   );
   const [reflection, setReflection] = useState<string | null>(null);
+  // Persisted attempts loaded once at mount. Combined with sessionAttempts to
+  // compute a lifetime solved count that survives reloads.
+  const [persistedAttempts] = useState<Attempt[]>(() => loadAttempts());
 
   const fields: AnswerField[] = specsFor(currentProblem).map((s) => ({
     key: s.key,
@@ -162,15 +164,32 @@ export function useProblemFlow() {
     }
   }, [initialChallenge]);
 
-  // Solved count derived from latest-result-per-problem-id. This way a
-  // successful redo flips a previously-missed problem into solved.
-  const solvedCount = useMemo(() => {
-    const latest = new Map<string, boolean>();
-    for (const a of sessionAttempts) latest.set(a.problemId, a.allCorrect);
-    let n = 0;
-    for (const v of latest.values()) if (v) n++;
-    return n;
-  }, [sessionAttempts]);
+  // Lifetime view of attempts: persisted log unioned with this-session
+  // attempts, deduped latest-wins (session wins on overlap, since it's the
+  // newer truth). Drives both the X/N solved count and the expanded
+  // solved/missed lists in the stats panel.
+  const lifetimeAttempts = useMemo<SessionAttempt[]>(() => {
+    const latest = new Map<string, SessionAttempt>();
+    for (const a of persistedAttempts) {
+      const p = problems.find((x) => x.id === a.problem_id);
+      if (!p) continue;
+      latest.set(a.problem_id, {
+        problemId: a.problem_id,
+        concept: p.concept,
+        difficulty: p.difficulty,
+        allCorrect: attemptAllCorrect(a),
+      });
+    }
+    for (const a of sessionAttempts) {
+      latest.set(a.problemId, a);
+    }
+    return Array.from(latest.values());
+  }, [persistedAttempts, sessionAttempts]);
+
+  const solvedCount = useMemo(
+    () => lifetimeAttempts.filter((a) => a.allCorrect).length,
+    [lifetimeAttempts]
+  );
 
   // Snapshot of session state used by the pagehide listener. Updated every
   // render so the listener (registered once) always sees the latest values.
@@ -239,11 +258,6 @@ export function useProblemFlow() {
     // sessionAttempts.length is intentionally omitted from the dep list.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reflection]);
-
-  const setLanguage = useCallback((lang: Language) => {
-    setLanguageState(lang);
-    savePreferredLanguage(lang);
-  }, []);
 
   const submit = useCallback(
     (answers: Record<string, string>): SubmissionResult => {
@@ -409,8 +423,6 @@ export function useProblemFlow() {
 
   return {
     currentProblem,
-    language,
-    setLanguage,
     fields,
     submit,
     next,
@@ -419,6 +431,7 @@ export function useProblemFlow() {
     lastResult,
     solvedCount,
     sessionAttempts,
+    lifetimeAttempts,
     isChallengeMode,
     retryUsed,
     reflection,

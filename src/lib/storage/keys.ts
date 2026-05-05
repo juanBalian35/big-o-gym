@@ -6,5 +6,7 @@ export const ATTEMPTS_KEY = 'complexity-practice:v2:attempts';
 // Preferences schema unchanged since v1.
 export const PREFERENCES_KEY = 'complexity-practice:v1:preferences';
 
+export const RACE_PB_KEY_PREFIX = 'complexity-practice:v1:race-pb:';
+
 // Kept for tests that assert the version-prefix invariant.
 export const STORAGE_PREFIX = 'complexity-practice:';

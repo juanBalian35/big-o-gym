@@ -3,35 +3,34 @@ import type { SessionAttempt } from '../lib/session-reflection';
 import { readableName } from '../lib/problem-name';
 
 interface Props {
-  sessionAttempts: SessionAttempt[];
+  // Deduped lifetime list (persisted ∪ session, latest wins).
+  lifetimeAttempts: SessionAttempt[];
+  // This-session count, used for the "· N attempted" suffix.
+  sessionAttemptCount: number;
   totalCount: number;
   solvedCount: number;
   onSelectProblem: (id: string) => void;
 }
 
 export function SessionStatsPanel({
-  sessionAttempts,
+  lifetimeAttempts,
+  sessionAttemptCount,
   totalCount,
   solvedCount,
   onSelectProblem,
 }: Props) {
   const [open, setOpen] = useState(false);
 
-  // Dedup by problem id, keeping the latest attempt. Within a single session
-  // each problem appears at most once until all are seen, but the rotation
-  // resets after that and a problem can re-appear; the latest result wins.
   const { solved, missed } = useMemo(() => {
-    const latest = new Map<string, SessionAttempt>();
-    for (const a of sessionAttempts) latest.set(a.problemId, a);
     const solvedList: SessionAttempt[] = [];
     const missedList: SessionAttempt[] = [];
-    for (const a of latest.values()) {
+    for (const a of lifetimeAttempts) {
       (a.allCorrect ? solvedList : missedList).push(a);
     }
     return { solved: solvedList, missed: missedList };
-  }, [sessionAttempts]);
+  }, [lifetimeAttempts]);
 
-  const hasAttempts = sessionAttempts.length > 0;
+  const hasAttempts = lifetimeAttempts.length > 0;
 
   return (
     <section
@@ -48,9 +47,9 @@ export function SessionStatsPanel({
         <span className="tabular-nums">
           <span className="text-text">{solvedCount}</span>
           <span className="opacity-60"> / {totalCount}</span> solved
-          {hasAttempts && (
+          {sessionAttemptCount > 0 && (
             <span className="opacity-60">
-              {' '}· {sessionAttempts.length} attempted
+              {' '}· {sessionAttemptCount} attempted this session
             </span>
           )}
         </span>

@@ -23,7 +23,13 @@ export type EventName =
   | 'challenge_arrived'
   | 'retry'
   | 'reflection_shown'
-  | 'session_end';
+  | 'session_end'
+  | 'race_start'
+  | 'race_complete'
+  | 'race_pb'
+  | 'race_submit'
+  | 'race_abandon'
+  | 'race_callout_click';
 
 type PropValue = string | number | boolean;
 

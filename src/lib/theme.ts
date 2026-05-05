@@ -7,12 +7,22 @@ import { safeStorage } from './storage/safe-storage';
 export type Theme = 'dark' | 'light';
 
 const THEME_KEY = 'complexity-practice:v1:theme';
-const DEFAULT: Theme = 'dark';
+
+function detectSystemTheme(): Theme {
+  if (
+    typeof window !== 'undefined' &&
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: light)').matches
+  ) {
+    return 'light';
+  }
+  return 'dark';
+}
 
 export function loadTheme(): Theme {
   const raw = safeStorage.get(THEME_KEY);
   if (raw === 'light' || raw === 'dark') return raw;
-  return DEFAULT;
+  return detectSystemTheme();
 }
 
 export function saveTheme(theme: Theme): void {
