@@ -1,8 +1,9 @@
-import type { Difficulty } from '../types/problem';
+import type { Category, Difficulty } from '../types/problem';
 
 export interface SessionAttempt {
   problemId: string;
   concept: string;
+  category: Category;
   difficulty: Difficulty;
   allCorrect: boolean;
 }

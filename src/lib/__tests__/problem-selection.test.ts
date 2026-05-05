@@ -10,6 +10,7 @@ const make = (id: string): Problem => ({
   space_complexity: 'O(1)',
   explanation: 'x',
   concept: 'x',
+  category: 'arrays',
   topic_tags: [],
   difficulty: 'easy',
   variables: [{ name: 'n', meaning: 'placeholder' }],

@@ -6,6 +6,7 @@ const a = (
 ): SessionAttempt => ({
   problemId: 'p',
   concept: 'X',
+  category: 'arrays',
   difficulty: 'medium',
   ...partial,
 });

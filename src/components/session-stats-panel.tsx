@@ -106,8 +106,10 @@ function Section({ title, tone, entries, onSelect, actionLabel }: SectionProps) 
             className="flex items-center justify-between gap-3"
           >
             <span className="font-mono text-text">
-              {readableName(a.problemId)}
-              <span className="ml-2 text-muted">{a.concept}</span>
+              {readableName(a.problemId)}{' '}
+              <span className="text-muted">
+                {a.category}: {a.concept}
+              </span>
             </span>
             <button
               type="button"

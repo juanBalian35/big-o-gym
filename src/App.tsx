@@ -13,6 +13,7 @@ import {
   navigateHome,
   type RaceRoute,
 } from './lib/url-routing';
+import { problems } from './data/problems';
 import type { Language } from './types/problem';
 
 type Route =
@@ -37,6 +38,7 @@ export function App() {
     loadPreferredLanguage()
   );
   const [theme, setThemeState] = useState<Theme>(() => loadTheme());
+  const [solvedCount, setSolvedCount] = useState<number>(0);
 
   useEffect(() => {
     applyTheme(theme);
@@ -79,6 +81,8 @@ export function App() {
   const showLanguageToggle =
     route.kind === 'practice' || route.kind === 'race-set';
 
+  const showProgress = route.kind === 'practice';
+
   return (
     <div className="min-h-screen bg-bg text-text">
       <Header
@@ -88,9 +92,15 @@ export function App() {
         onThemeChange={handleThemeChange}
         onTitleClick={handleTitleClick}
         showLanguageToggle={showLanguageToggle}
+        solvedCount={showProgress ? solvedCount : undefined}
+        totalCount={showProgress ? problems.length : undefined}
       />
       {route.kind === 'practice' && (
-        <PracticeView language={language} theme={theme} />
+        <PracticeView
+          language={language}
+          theme={theme}
+          onSolvedCountChange={setSolvedCount}
+        />
       )}
       {route.kind === 'race-list' && <RaceSetList />}
       {route.kind === 'race-set' && (

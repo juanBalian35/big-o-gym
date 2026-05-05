@@ -10,6 +10,7 @@ const baseProblem: CodeProblem = {
   space_complexity: 'O(1)',
   explanation: 'a single pass',
   concept: 'a placeholder concept',
+  category: 'arrays',
   topic_tags: [],
   difficulty: 'easy',
   variables: [{ name: 'n', meaning: 'length of the input' }],

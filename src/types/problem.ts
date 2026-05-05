@@ -1,6 +1,23 @@
 export type Language = 'python' | 'javascript';
 export type Difficulty = 'easy' | 'medium' | 'hard';
 
+export type Category =
+  | 'hashing'
+  | 'dynamic-programming'
+  | 'two-pointer'
+  | 'sliding-window'
+  | 'binary-search'
+  | 'sorting'
+  | 'trees'
+  | 'graphs'
+  | 'heap'
+  | 'linked-list'
+  | 'arrays'
+  | 'in-place'
+  | 'hidden-cost'
+  | 'amortized-analysis'
+  | 'fundamentals';
+
 export interface ProblemVariable {
   name: string;
   meaning: string;
@@ -32,6 +49,7 @@ export interface CodeProblem {
   // Names the underlying idea ("amortized analysis", "dominant term in a
   // sum"), distinct from topic_tags which are categorical.
   concept: string;
+  category: Category;
   topic_tags: string[];
   difficulty: Difficulty;
 }
@@ -48,6 +66,7 @@ export interface DataStructureProblem {
   };
   explanation: string;
   concept: string;
+  category: Category;
   topic_tags: string[];
   difficulty: Difficulty;
 }

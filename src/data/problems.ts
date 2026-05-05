@@ -5,6 +5,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'two-sum',
+    category: 'hashing',
     code: {
       python: `def two_sum(nums, target):
     seen = {}
@@ -35,6 +36,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'contains-duplicate',
+    category: 'hashing',
     code: {
       python: `def contains_duplicate(nums):
     seen = set()
@@ -64,6 +66,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'valid-anagram',
+    category: 'hashing',
     code: {
       python: `def is_anagram(s, t):
     if len(s) != len(t):
@@ -99,6 +102,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'group-anagrams',
+    category: 'sorting',
     code: {
       python: `def group_anagrams(strs):
     groups = {}
@@ -135,6 +139,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'product-except-self',
+    category: 'arrays',
     code: {
       python: `def product_except_self(nums):
     n = len(nums)
@@ -179,6 +184,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'max-subarray-kadane',
+    category: 'dynamic-programming',
     code: {
       python: `def max_subarray(nums):
     best = current = nums[0]
@@ -210,6 +216,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'valid-palindrome',
+    category: 'two-pointer',
     code: {
       python: `def is_palindrome(s):
     left, right = 0, len(s) - 1
@@ -248,6 +255,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'three-sum',
+    category: 'two-pointer',
     code: {
       python: `def three_sum(nums):
     nums.sort()
@@ -312,6 +320,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'container-with-most-water',
+    category: 'two-pointer',
     code: {
       python: `def max_area(heights):
     left, right = 0, len(heights) - 1
@@ -350,6 +359,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'best-time-buy-sell-stock',
+    category: 'arrays',
     code: {
       python: `def max_profit(prices):
     min_price = float('inf')
@@ -382,6 +392,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'longest-substring-no-repeat',
+    category: 'sliding-window',
     code: {
       python: `def length_of_longest_substring(s):
     seen = {}
@@ -425,6 +436,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'longest-repeating-char-replacement',
+    category: 'sliding-window',
     code: {
       python: `def character_replacement(s, k):
     counts = {}
@@ -469,6 +481,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'binary-search-classic',
+    category: 'binary-search',
     code: {
       python: `def binary_search(arr, target):
     lo, hi = 0, len(arr) - 1
@@ -505,6 +518,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'search-rotated-sorted',
+    category: 'binary-search',
     code: {
       python: `def search_rotated(arr, target):
     lo, hi = 0, len(arr) - 1
@@ -551,6 +565,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'find-min-rotated-sorted',
+    category: 'binary-search',
     code: {
       python: `def find_min(arr):
     lo, hi = 0, len(arr) - 1
@@ -585,6 +600,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'reverse-linked-list',
+    category: 'linked-list',
     code: {
       python: `def reverse_list(head):
     prev = None
@@ -618,6 +634,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'detect-cycle-floyd',
+    category: 'linked-list',
     code: {
       python: `def has_cycle(head):
     slow = fast = head
@@ -649,6 +666,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'merge-two-sorted-lists',
+    category: 'linked-list',
     code: {
       python: `def merge_two_lists(a, b):
     dummy = ListNode()
@@ -695,6 +713,7 @@ export const problems: Problem[] = [
   {
     kind: 'code',
     id: 'lru-cache',
+    category: 'hashing',
     code: {
       python: `from collections import OrderedDict
 
@@ -754,6 +773,7 @@ class LRUCache:
   {
     kind: 'code',
     id: 'invert-binary-tree',
+    category: 'trees',
     code: {
       python: `def invert_tree(node):
     if not node:
@@ -787,6 +807,7 @@ class LRUCache:
   {
     kind: 'code',
     id: 'max-depth-binary-tree',
+    category: 'trees',
     code: {
       python: `def max_depth(node):
     if not node:
@@ -815,6 +836,7 @@ class LRUCache:
   {
     kind: 'code',
     id: 'same-tree',
+    category: 'trees',
     code: {
       python: `def is_same_tree(p, q):
     if not p and not q:
@@ -849,6 +871,7 @@ class LRUCache:
   {
     kind: 'code',
     id: 'validate-bst',
+    category: 'trees',
     code: {
       python: `def is_valid_bst(node, lo=float('-inf'), hi=float('inf')):
     if not node:
@@ -882,6 +905,7 @@ class LRUCache:
   {
     kind: 'code',
     id: 'level-order-traversal',
+    category: 'trees',
     code: {
       python: `from collections import deque
 
@@ -931,6 +955,7 @@ def level_order(root):
   {
     kind: 'code',
     id: 'lowest-common-ancestor',
+    category: 'trees',
     code: {
       python: `def lca(root, p, q):
     if not root or root == p or root == q:
@@ -968,6 +993,7 @@ def level_order(root):
   {
     kind: 'code',
     id: 'trie-insert-search',
+    category: 'trees',
     code: {
       python: `class Trie:
     def __init__(self):
@@ -1030,6 +1056,7 @@ def level_order(root):
   {
     kind: 'code',
     id: 'top-k-frequent',
+    category: 'heap',
     code: {
       python: `import heapq
 from collections import Counter
@@ -1070,6 +1097,7 @@ def top_k_frequent(nums, k):
   {
     kind: 'code',
     id: 'find-median-stream',
+    category: 'heap',
     code: {
       python: `import heapq
 
@@ -1123,6 +1151,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'number-of-islands',
+    category: 'graphs',
     code: {
       python: `def num_islands(grid):
     if not grid:
@@ -1187,6 +1216,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'clone-graph',
+    category: 'graphs',
     code: {
       python: `def clone_graph(node):
     if not node:
@@ -1231,6 +1261,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'course-schedule',
+    category: 'graphs',
     code: {
       python: `def can_finish(num_courses, prerequisites):
     graph = [[] for _ in range(num_courses)]
@@ -1290,6 +1321,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'pacific-atlantic',
+    category: 'graphs',
     code: {
       python: `def pacific_atlantic(heights):
     if not heights:
@@ -1359,6 +1391,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'climbing-stairs',
+    category: 'dynamic-programming',
     code: {
       python: `def climb_stairs(n):
     if n <= 2:
@@ -1388,6 +1421,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'house-robber',
+    category: 'dynamic-programming',
     code: {
       python: `def rob(nums):
     prev = curr = 0
@@ -1414,6 +1448,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'coin-change',
+    category: 'dynamic-programming',
     code: {
       python: `def coin_change(coins, amount):
     dp = [amount + 1] * (amount + 1)
@@ -1452,6 +1487,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'longest-increasing-subseq',
+    category: 'dynamic-programming',
     code: {
       python: `def length_of_lis(nums):
     n = len(nums)
@@ -1490,6 +1526,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'word-break',
+    category: 'dynamic-programming',
     code: {
       python: `def word_break(s, word_dict):
     n = len(s)
@@ -1538,6 +1575,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'merge-intervals',
+    category: 'sorting',
     code: {
       python: `def merge_intervals(intervals):
     intervals.sort(key=lambda x: x[0])
@@ -1573,6 +1611,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'insert-interval',
+    category: 'arrays',
     code: {
       python: `def insert(intervals, new_interval):
     res = []
@@ -1618,6 +1657,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'set-matrix-zeroes',
+    category: 'in-place',
     code: {
       python: `def set_zeroes(matrix):
     m, n = len(matrix), len(matrix[0])
@@ -1678,6 +1718,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'spiral-matrix',
+    category: 'arrays',
     code: {
       python: `def spiral_order(matrix):
     if not matrix:
@@ -1745,6 +1786,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-half-bound-nested',
+    category: 'fundamentals',
     code: {
       python: `def count_smaller_pairs(arr):
     count = 0
@@ -1780,6 +1822,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-doubling-inner',
+    category: 'fundamentals',
     code: {
       python: `def count_doublings(arr):
     n = len(arr)
@@ -1815,6 +1858,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-shift-in-loop',
+    category: 'hidden-cost',
     code: {
       python: `def double_all(arr):
     result = []
@@ -1846,6 +1890,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-string-concat',
+    category: 'hidden-cost',
     code: {
       python: `def join_words(words):
     result = ''
@@ -1877,6 +1922,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-memoized-recursion',
+    category: 'dynamic-programming',
     code: {
       python: `def fib_memo(n, memo=None):
     if memo is None:
@@ -1898,8 +1944,8 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'Looks like the classic exponential Fibonacci, but the memo turns it into **O(n)** time — each subproblem `fib(k)` is computed exactly once. Memo plus call stack add up to **O(n)** auxiliary. The structure of the recursion is identical to the naive form; the memo changes everything.',
-    concept: 'memoization collapses exponential to linear',
+      'Looks like the classic exponential Fibonacci, but the memo turns it into **O(n)** time — each subproblem `fib(k)` is computed exactly once (without the memo, you\'d recompute `fib(k)` exponentially many times — **O(2ⁿ)**). Memo plus call stack add up to **O(n)** auxiliary. The structure of the recursion is identical to the naive form; the memo changes everything.',
+    concept: 'top-down DP with memoization',
     topic_tags: ['twist', 'recursion', 'memoization', 'dp'],
     difficulty: 'hard',
     variables: [{ name: 'n', meaning: 'value of the input integer' }],
@@ -1907,6 +1953,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'twist-naive-fib',
+    category: 'fundamentals',
     code: {
       python: `def fib(n):
     if n < 2:
@@ -1933,6 +1980,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'special-dynamic-array-push',
+    category: 'amortized-analysis',
     code: {
       python: `def build_list(n):
     arr = []
@@ -1959,6 +2007,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'special-early-return-sorted',
+    category: 'fundamentals',
     code: {
       python: `def contains_target(sorted_arr, target):
     for x in sorted_arr:
@@ -1987,6 +2036,7 @@ class MedianFinder:
   {
     kind: 'code',
     id: 'special-balanced-bst-traversal',
+    category: 'trees',
     code: {
       python: `def in_order(node, out):
     if not node:
@@ -2026,6 +2076,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-binary-heap-push',
+    category: 'heap',
     prompt:
       'What is the time complexity of pushing a value onto a binary heap?',
     time_complexity: 'O(log n)',
@@ -2038,6 +2089,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-binary-heap-peek',
+    category: 'heap',
     prompt:
       'What is the time complexity of peeking at the top (max or min) of a binary heap?',
     time_complexity: 'O(1)',
@@ -2050,6 +2102,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-hashmap-lookup-average',
+    category: 'hashing',
     prompt:
       'What is the average-case time complexity of looking up a key in a hashmap?',
     time_complexity: 'O(1)',
@@ -2062,6 +2115,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-hashmap-lookup-worst',
+    category: 'hashing',
     prompt:
       'What is the worst-case time complexity of looking up a key in a hashmap?',
     time_complexity: 'O(n)',
@@ -2074,6 +2128,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-linked-list-head-insert',
+    category: 'linked-list',
     prompt:
       'What is the time complexity of inserting a node at the head of a singly linked list?',
     time_complexity: 'O(1)',
@@ -2086,6 +2141,7 @@ function traverse(root) {
   {
     kind: 'datastructure',
     id: 'ds-dynamic-array-append',
+    category: 'amortized-analysis',
     prompt:
       'What is the amortized time complexity of appending to a dynamic array (e.g. Python list, JavaScript Array)?',
     time_complexity: 'O(1)',

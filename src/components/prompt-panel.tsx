@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react';
 import type { Language, Problem } from '../types/problem';
 import type { HighlightedProblem } from '../data/problems-highlighted';
 import type { Theme } from '../lib/theme';
+import { buildShareUrl } from '../lib/url-routing';
+import { track } from '../lib/track';
 
 interface Props {
   problem: Problem;
@@ -27,10 +29,11 @@ export function PromptPanel({ problem, language, theme }: Props) {
   if (problem.kind === 'datastructure') {
     return (
       <section className="rounded-md border border-border bg-panel">
-        <div className="border-b border-border px-4 py-2">
+        <div className="flex items-center justify-between border-b border-border px-4 py-2">
           <span className="text-xs uppercase tracking-wider text-muted">
             data structure question
           </span>
+          <CopyLinkSlug id={problem.id} />
         </div>
         <div className="px-6 py-8 text-base leading-relaxed">
           {problem.prompt}
@@ -74,6 +77,7 @@ function CodeView({
         <span className="text-xs uppercase tracking-wider text-muted">
           {language}
         </span>
+        <CopyLinkSlug id={problem.id} />
       </div>
       <div className="code-panel-body p-4 text-sm leading-relaxed overflow-x-auto">
         {html ? (
@@ -88,5 +92,33 @@ function CodeView({
         )}
       </div>
     </section>
+  );
+}
+
+function CopyLinkSlug({ id }: { id: string }) {
+  const [copied, setCopied] = useState(false);
+  const slug = id.replace(/-/g, '_');
+
+  async function handleCopy() {
+    const url = buildShareUrl(id);
+    track('share', { id });
+    try {
+      await navigator.clipboard.writeText(url);
+      setCopied(true);
+      window.setTimeout(() => setCopied(false), 2000);
+    } catch {
+      window.prompt('Copy this link:', url);
+    }
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleCopy}
+      title="Copy link to this problem"
+      className="font-mono text-xs text-muted transition-colors hover:text-accent"
+    >
+      {copied ? 'link copied!' : slug}
+    </button>
   );
 }

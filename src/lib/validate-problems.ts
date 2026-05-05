@@ -3,12 +3,31 @@ import type {
   CodeProblem,
   DataStructureProblem,
   Difficulty,
+  Category,
 } from '../types/problem';
 
 const VALID_DIFFICULTIES: ReadonlySet<Difficulty> = new Set([
   'easy',
   'medium',
   'hard',
+]);
+
+const VALID_CATEGORIES: ReadonlySet<Category> = new Set([
+  'hashing',
+  'dynamic-programming',
+  'two-pointer',
+  'sliding-window',
+  'binary-search',
+  'sorting',
+  'trees',
+  'graphs',
+  'heap',
+  'linked-list',
+  'arrays',
+  'in-place',
+  'hidden-cost',
+  'amortized-analysis',
+  'fundamentals',
 ]);
 
 const KNOWN_FUNCTION_WORDS = ['log', 'lg', 'ln', 'max', 'min'];
@@ -49,6 +68,11 @@ export function validateProblems(problems: Problem[]): void {
     }
     if (!p.concept || typeof p.concept !== 'string') {
       throw new Error(`${where}: missing concept`);
+    }
+    if (!p.category || !VALID_CATEGORIES.has(p.category as Category)) {
+      throw new Error(
+        `${where}: invalid or missing category "${p.category ?? '<missing>'}"`
+      );
     }
     if (!Array.isArray(p.topic_tags)) {
       throw new Error(`${where}: topic_tags must be an array`);

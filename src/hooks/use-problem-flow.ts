@@ -42,26 +42,50 @@ interface PickResult {
 function pickForSessionIndex(
   prevId: string | null,
   shownIndex: number,
-  seenIds: Set<string>
+  seenIds: Set<string>,
+  solvedIds: Set<string>
 ): PickResult {
-  // First N problems: easy code-reading only. Datastructure quizzes are a
-  // rarer flavor and never lead off the session.
-  const inRamp = shownIndex < EASY_RAMP_COUNT;
   const rampPool = problems.filter(
     (p) => p.kind === 'code' && p.difficulty === 'easy'
   );
   const fullPool = problems;
-  const pool = inRamp && rampPool.length > 0 ? rampPool : fullPool;
 
-  const unseen = pool.filter((p) => !seenIds.has(p.id));
-  if (unseen.length > 0) {
+  // Easy-code ramp at the top of the session — but skip ones already solved.
+  const inRamp = shownIndex < EASY_RAMP_COUNT && rampPool.length > 0;
+  if (inRamp) {
+    const rampCandidates = rampPool.filter(
+      (p) => !seenIds.has(p.id) && !solvedIds.has(p.id)
+    );
+    if (rampCandidates.length > 0) {
+      return {
+        problem: selectNextProblem(rampCandidates, prevId),
+        resetSeen: false,
+      };
+    }
+  }
+
+  // Default: unseen this session AND not already solved.
+  const fresh = fullPool.filter(
+    (p) => !seenIds.has(p.id) && !solvedIds.has(p.id)
+  );
+  if (fresh.length > 0) {
     return {
-      problem: selectNextProblem(unseen, prevId),
+      problem: selectNextProblem(fresh, prevId),
       resetSeen: false,
     };
   }
 
-  // Every problem in this pool has been seen. Reset and serve a fresh cycle.
+  // Every unsolved problem has been seen this session — reset and serve any
+  // unsolved problem.
+  const unsolved = fullPool.filter((p) => !solvedIds.has(p.id));
+  if (unsolved.length > 0) {
+    return {
+      problem: selectNextProblem(unsolved, prevId),
+      resetSeen: true,
+    };
+  }
+
+  // Everything is solved — cycle the full pool.
   return {
     problem: selectNextProblem(fullPool, prevId),
     resetSeen: true,
@@ -127,11 +151,16 @@ export function useProblemFlow(language: Language) {
     findChallengeProblem()
   );
 
-  const [initialProblem] = useState<Problem>(
-    () =>
-      initialChallenge ??
-      pickForSessionIndex(null, 0, new Set<string>()).problem
-  );
+  const [initialProblem] = useState<Problem>(() => {
+    if (initialChallenge) return initialChallenge;
+    const initialSolved = new Set(
+      loadAttempts()
+        .filter(attemptAllCorrect)
+        .map((a) => a.problem_id)
+    );
+    return pickForSessionIndex(null, 0, new Set<string>(), initialSolved)
+      .problem;
+  });
 
   const [currentProblem, setCurrentProblem] = useState<Problem>(initialProblem);
   const [isChallengeMode, setIsChallengeMode] = useState(
@@ -143,6 +172,7 @@ export function useProblemFlow(language: Language) {
   );
   const [lastResult, setLastResult] = useState<SubmissionResult | null>(null);
   const [retryUsed, setRetryUsed] = useState(false);
+  const [pendingNext, setPendingNext] = useState<PickResult | null>(null);
   const [sessionAttempts, setSessionAttempts] = useState<SessionAttempt[]>(
     []
   );
@@ -176,6 +206,7 @@ export function useProblemFlow(language: Language) {
       latest.set(a.problem_id, {
         problemId: a.problem_id,
         concept: p.concept,
+        category: p.category,
         difficulty: p.difficulty,
         allCorrect: attemptAllCorrect(a),
       });
@@ -188,6 +219,14 @@ export function useProblemFlow(language: Language) {
 
   const solvedCount = useMemo(
     () => lifetimeAttempts.filter((a) => a.allCorrect).length,
+    [lifetimeAttempts]
+  );
+
+  const solvedIds = useMemo(
+    () =>
+      new Set(
+        lifetimeAttempts.filter((a) => a.allCorrect).map((a) => a.problemId)
+      ),
     [lifetimeAttempts]
   );
 
@@ -327,6 +366,7 @@ export function useProblemFlow(language: Language) {
             {
               problemId: currentProblem.id,
               concept: currentProblem.concept,
+              category: currentProblem.category,
               difficulty: currentProblem.difficulty,
               allCorrect,
             },
@@ -360,11 +400,35 @@ export function useProblemFlow(language: Language) {
         }
 
         setLastResult(result);
+        // The just-finished problem isn't in solvedIds yet (sessionAttempts
+        // hasn't applied this render). Extend it manually for the pre-pick
+        // when the user truly solved it on a non-retry, non-challenge run.
+        const justSolved =
+          allCorrect && !isChallengeMode && !retryUsed;
+        const effectiveSolvedIds = justSolved
+          ? new Set([...solvedIds, currentProblem.id])
+          : solvedIds;
+        setPendingNext(
+          pickForSessionIndex(
+            currentProblem.id,
+            shownCount,
+            seenIds,
+            effectiveSolvedIds
+          )
+        );
       }
 
       return result;
     },
-    [currentProblem, language, isChallengeMode, retryUsed]
+    [
+      currentProblem,
+      language,
+      isChallengeMode,
+      retryUsed,
+      shownCount,
+      seenIds,
+      solvedIds,
+    ]
   );
 
   const next = useCallback(() => {
@@ -383,11 +447,10 @@ export function useProblemFlow(language: Language) {
       setReflection(null);
     }
 
-    const { problem: nextProblem, resetSeen } = pickForSessionIndex(
-      currentProblem.id,
-      shownCount,
-      seenIds
-    );
+    const { problem: nextProblem, resetSeen } =
+      pendingNext ??
+      pickForSessionIndex(currentProblem.id, shownCount, seenIds, solvedIds);
+    setPendingNext(null);
     setCurrentProblem(nextProblem);
     setShownCount(shownCount + 1);
     setSeenIds(
@@ -395,12 +458,21 @@ export function useProblemFlow(language: Language) {
         ? new Set([nextProblem.id])
         : new Set([...seenIds, nextProblem.id])
     );
-  }, [isChallengeMode, sessionAttempts, currentProblem, shownCount, seenIds]);
+  }, [
+    isChallengeMode,
+    sessionAttempts,
+    currentProblem,
+    shownCount,
+    seenIds,
+    pendingNext,
+    solvedIds,
+  ]);
 
   const retry = useCallback(() => {
     track('retry', { id: currentProblem.id });
     setLastResult(null);
     setRetryUsed(true);
+    setPendingNext(null);
   }, [currentProblem.id]);
 
   // Programmatic in-app navigation to a specific problem. Used by the
@@ -435,5 +507,6 @@ export function useProblemFlow(language: Language) {
     isChallengeMode,
     retryUsed,
     reflection,
+    nextProblemPreview: pendingNext?.problem ?? null,
   };
 }

@@ -1,4 +1,6 @@
 import { useEffect, useState, type KeyboardEvent } from 'react';
+import { VariablesPanel } from './variables-panel';
+import type { ProblemVariable } from '../types/problem';
 
 export interface AnswerField {
   key: string;
@@ -10,9 +12,16 @@ interface Props {
   onSubmit: (answers: Record<string, string>) => void;
   disabled?: boolean;
   parseError?: string | null;
+  variables?: ProblemVariable[];
 }
 
-export function AnswerPanel({ fields, onSubmit, disabled, parseError }: Props) {
+export function AnswerPanel({
+  fields,
+  onSubmit,
+  disabled,
+  parseError,
+  variables,
+}: Props) {
   const [values, setValues] = useState<Record<string, string>>(() =>
     initialValues(fields)
   );
@@ -42,45 +51,56 @@ export function AnswerPanel({ fields, onSubmit, disabled, parseError }: Props) {
     }
   }
 
+  const hasVariables = variables && variables.length > 0;
+
   return (
     <section
-      className="rounded-md border border-border bg-panel p-4 space-y-3"
+      className="rounded-md border border-border bg-panel"
       aria-disabled={disabled}
     >
-      <p className="text-[11px] text-muted">
-        examples:{' '}
-        <code className="text-text">n</code>,{' '}
-        <code className="text-text">n log n</code>,{' '}
-        <code className="text-text">n + m</code>,{' '}
-        <code className="text-text">n^2</code>
-      </p>
-      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {fields.map((f, idx) => (
-          <Field
-            key={f.key}
-            label={f.label}
-            value={values[f.key] ?? ''}
-            onChange={(v) => setValues((s) => ({ ...s, [f.key]: v }))}
-            onKeyDown={handleKey}
-            disabled={disabled}
-            autoFocus={idx === 0}
-          />
-        ))}
-      </div>
-      {parseError && (
-        <p className="text-xs text-warn" role="alert">
-          {parseError}
-        </p>
+      {hasVariables && (
+        <div className="px-4 py-3">
+          <VariablesPanel variables={variables} />
+        </div>
       )}
-      <div className="flex justify-end">
-        <button
-          type="button"
-          onClick={handleSubmit}
-          disabled={!canSubmit}
-          className="rounded border border-accent bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-muted"
-        >
-          Submit
-        </button>
+      <div
+        className={`space-y-3 p-4 ${hasVariables ? 'border-t border-border' : ''}`}
+      >
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {fields.map((f, idx) => (
+            <Field
+              key={f.key}
+              label={f.label}
+              value={values[f.key] ?? ''}
+              onChange={(v) => setValues((s) => ({ ...s, [f.key]: v }))}
+              onKeyDown={handleKey}
+              disabled={disabled}
+              autoFocus={idx === 0}
+            />
+          ))}
+        </div>
+        {parseError && (
+          <p className="text-xs text-warn" role="alert">
+            {parseError}
+          </p>
+        )}
+        <div className="flex items-center justify-between gap-3">
+          <p className="text-[11px] text-muted">
+            examples:{' '}
+            <code className="text-text">n</code>,{' '}
+            <code className="text-text">n log n</code>,{' '}
+            <code className="text-text">n + m</code>,{' '}
+            <code className="text-text">n²</code>
+          </p>
+          <button
+            type="button"
+            onClick={handleSubmit}
+            disabled={!canSubmit}
+            className="rounded border border-accent bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-muted"
+          >
+            Submit
+          </button>
+        </div>
       </div>
     </section>
   );

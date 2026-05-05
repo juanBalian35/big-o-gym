@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRace } from '../hooks/use-race';
 import { PromptPanel } from './prompt-panel';
-import { VariablesPanel } from './variables-panel';
 import { AnswerPanel } from './answer-panel';
 import { RaceResult } from './race-result';
 import type { Language } from '../types/problem';
@@ -64,15 +63,17 @@ export function RaceRunner({ setId, vsTimeMs, language, theme }: Props) {
         language={language}
         theme={theme}
       />
-      {race.currentProblem.kind === 'code' && (
-        <VariablesPanel variables={race.currentProblem.variables} />
-      )}
       <AnswerPanel
         key={race.currentProblem.id}
         fields={race.fields}
         onSubmit={race.submit}
         parseError={race.parseErrorMsg}
         disabled={false}
+        variables={
+          race.currentProblem.kind === 'code'
+            ? race.currentProblem.variables
+            : undefined
+        }
       />
     </main>
   );

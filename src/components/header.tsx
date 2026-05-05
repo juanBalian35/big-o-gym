@@ -34,6 +34,8 @@ interface Props {
   onThemeChange: (t: Theme) => void;
   onTitleClick?: () => void;
   showLanguageToggle?: boolean;
+  solvedCount?: number;
+  totalCount?: number;
 }
 
 export function Header({
@@ -43,7 +45,11 @@ export function Header({
   onThemeChange,
   onTitleClick,
   showLanguageToggle = true,
+  solvedCount,
+  totalCount,
 }: Props) {
+  const showProgress =
+    typeof solvedCount === 'number' && typeof totalCount === 'number';
   return (
     <header className="sticky top-0 z-10 border-b border-border bg-bg/95 backdrop-blur">
       <div className="mx-auto flex max-w-3xl items-center justify-between gap-3 px-4 py-3">
@@ -59,8 +65,14 @@ export function Header({
             <h1 className="truncate text-sm font-semibold tracking-tight">
               big-o-gym
             </h1>
+            {showProgress && (
+              <span className="ml-1 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted tabular-nums">
+                <span className="text-text">{solvedCount}</span>
+                <span className="opacity-60"> / {totalCount}</span>
+              </span>
+            )}
           </div>
-          <p className="hidden sm:block text-[11px] text-muted mt-0.5">
+          <p className="hidden sm:block text-[10px] text-muted mt-0.5 opacity-80">
             Read the code, type the complexity, learn what trips you up.
           </p>
         </button>
@@ -92,9 +104,9 @@ function ThemeToggle({
       onClick={() => onThemeChange(next)}
       aria-label={`Switch to ${next} mode`}
       title={`Switch to ${next} mode`}
-      className="rounded border border-border px-2 py-1 text-xs text-muted hover:text-text transition-colors"
+      className="rounded border border-border px-2 py-1 text-sm font-bold text-muted hover:text-text transition-colors"
     >
-      {theme === 'dark' ? '☾' : '☀'}
+      {theme === 'dark' ? '◐' : '○'}
     </button>
   );
 }
