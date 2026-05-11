@@ -154,7 +154,7 @@ function applyMeta(template: string, meta: PageMeta): string {
   }
   out = out.replace(
     '<div id="root"></div>',
-    `<div id="root">${meta.body}</div>`
+    `<div id="root"><div style="display:none" aria-hidden="true">${meta.body}</div></div>`
   );
   return out;
 }
