@@ -13,9 +13,8 @@ export function initPostHog(): void {
   if (typeof window === 'undefined') return;
   if (!KEY) {
     if (import.meta.env.DEV) {
-      // eslint-disable-next-line no-console
       console.info(
-        '[posthog] VITE_POSTHOG_KEY not set — analytics will console-log only.'
+        '[posthog] VITE_POSTHOG_KEY not set - analytics will console-log only.'
       );
     }
     return;

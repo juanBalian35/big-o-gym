@@ -27,7 +27,7 @@ describe('tokenize', () => {
     ]);
   });
 
-  it('strips O() wrappers globally — O(n) + O(1) becomes (n) + (1)', () => {
+  it('strips O() wrappers globally - O(n) + O(1) becomes (n) + (1)', () => {
     expect(tokenize('O(n) + O(1)')).toEqual([
       { kind: 'LPAREN' },
       { kind: 'VAR', name: 'n' },

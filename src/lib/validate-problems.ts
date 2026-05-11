@@ -244,7 +244,7 @@ function validateDataStructureProblem(
       );
     }
   }
-  // Variable-name validation does not apply to datastructure problems —
+  // Variable-name validation does not apply to datastructure problems -
   // they don't declare variables; the prompt itself names the data structure.
 }
 

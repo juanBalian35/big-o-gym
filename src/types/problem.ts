@@ -36,7 +36,7 @@ export interface CodeProblem {
   variables: ProblemVariable[];
   // Single-method problems use this:
   time_complexity?: string;
-  // Multi-method problems use this instead — one entry per method:
+  // Multi-method problems use this instead - one entry per method:
   method_times?: MethodTime[];
   // Always required (single overall data-structure space):
   space_complexity: string;

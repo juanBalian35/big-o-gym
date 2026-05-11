@@ -1,7 +1,7 @@
 import { RACE_SETS } from '../data/race-sets';
 import { loadPB } from '../lib/race-storage';
 import { formatTime } from '../lib/format-time';
-import { navigateRace, navigateHome } from '../lib/url-routing';
+import { navigateRace, navigateHome, navigateToDaily } from '../lib/url-routing';
 
 export function RaceSetList() {
   return (
@@ -10,7 +10,7 @@ export function RaceSetList() {
         <h2 className="text-lg font-semibold">Race mode</h2>
         <p className="text-sm text-muted">
           Run a curated set against the clock. Each wrong submission adds 10
-          seconds — you keep retrying until you get it right.
+          seconds - you keep retrying until you get it right.
         </p>
       </div>
       <ul className="space-y-3">
@@ -44,13 +44,20 @@ export function RaceSetList() {
           );
         })}
       </ul>
-      <div>
+      <div className="flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={navigateHome}
           className="text-xs text-muted hover:text-text underline-offset-2 hover:underline"
         >
           ← back to practice
+        </button>
+        <button
+          type="button"
+          onClick={navigateToDaily}
+          className="text-xs text-accent underline-offset-2 hover:underline"
+        >
+          today's problem →
         </button>
       </div>
     </main>

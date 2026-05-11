@@ -16,6 +16,14 @@ import {
   reflect,
   type SessionAttempt,
 } from '../lib/session-reflection';
+import {
+  dateKey,
+  getCurrentStreak,
+  getDailyProblemId,
+  hasActiveStreak,
+  isTodaySolved,
+  recordDailySolve,
+} from '../lib/daily';
 import { track } from '../lib/track';
 import type { AnswerField } from '../components/answer-panel';
 import type { ResultLine } from '../components/result-panel';
@@ -23,6 +31,7 @@ import type { ResultLine } from '../components/result-panel';
 export interface SubmissionResult {
   lines: ResultLine[];
   hadParseError: boolean;
+  solutionShown?: boolean;
 }
 
 const EASY_RAMP_COUNT = 2;
@@ -50,7 +59,7 @@ function pickForSessionIndex(
   );
   const fullPool = problems;
 
-  // Easy-code ramp at the top of the session — but skip ones already solved.
+  // Easy-code ramp at the top of the session - but skip ones already solved.
   const inRamp = shownIndex < EASY_RAMP_COUNT && rampPool.length > 0;
   if (inRamp) {
     const rampCandidates = rampPool.filter(
@@ -75,7 +84,7 @@ function pickForSessionIndex(
     };
   }
 
-  // Every unsolved problem has been seen this session — reset and serve any
+  // Every unsolved problem has been seen this session - reset and serve any
   // unsolved problem.
   const unsolved = fullPool.filter((p) => !solvedIds.has(p.id));
   if (unsolved.length > 0) {
@@ -85,7 +94,7 @@ function pickForSessionIndex(
     };
   }
 
-  // Everything is solved — cycle the full pool.
+  // Everything is solved - cycle the full pool.
   return {
     problem: selectNextProblem(fullPool, prevId),
     resetSeen: true,
@@ -146,13 +155,18 @@ function specsFor(problem: Problem): FieldSpec[] {
   return specs;
 }
 
-export function useProblemFlow(language: Language) {
+export function useProblemFlow(language: Language, isDaily = false) {
   const [initialChallenge] = useState<Problem | null>(() =>
     findChallengeProblem()
   );
 
   const [initialProblem] = useState<Problem>(() => {
     if (initialChallenge) return initialChallenge;
+    if (isDaily) {
+      const dailyId = getDailyProblemId();
+      const target = problems.find((p) => p.id === dailyId);
+      if (target) return target;
+    }
     const initialSolved = new Set(
       loadAttempts()
         .filter(attemptAllCorrect)
@@ -181,6 +195,44 @@ export function useProblemFlow(language: Language) {
   // compute a lifetime solved count that survives reloads.
   const [persistedAttempts] = useState<Attempt[]>(() => loadAttempts());
 
+  // Daily problem state. Resolved once at mount - if the user keeps the tab
+  // open across UTC midnight they keep yesterday's daily, which is fine.
+  // Snapshot id and date together so they can't drift across that boundary.
+  const [dailySnapshot] = useState(() => {
+    const now = new Date();
+    return { id: getDailyProblemId(now), date: dateKey(now) };
+  });
+  const dailyProblemId = dailySnapshot.id;
+  const dailyDate = dailySnapshot.date;
+  const [dailySolvedToday, setDailySolvedToday] = useState<boolean>(() =>
+    isTodaySolved()
+  );
+  const [dailyHasStreak] = useState<boolean>(() => hasActiveStreak());
+  const [dailyStreak] = useState<number>(() => getCurrentStreak());
+
+  // One-shot: fire daily_started when the hook initializes in daily mode.
+  // Lets us measure the daily funnel (started → solved → abandoned). The
+  // already_solved flag distinguishes fresh attempts from "I clicked /daily
+  // but already did it today".
+  const dailyStartedFiredRef = useRef(false);
+  useEffect(() => {
+    if (!isDaily || dailyStartedFiredRef.current) return;
+    dailyStartedFiredRef.current = true;
+    track('daily_started', {
+      id: getDailyProblemId(),
+      date: dateKey(),
+      already_solved: isTodaySolved(),
+    });
+  }, [isDaily]);
+
+  // Mode tag attached to every submit-flow event so the practice/daily/
+  // challenge cohorts can be split downstream.
+  const routeMode: 'practice' | 'daily' | 'challenge' = isChallengeMode
+    ? 'challenge'
+    : isDaily
+      ? 'daily'
+      : 'practice';
+
   const fields: AnswerField[] = specsFor(currentProblem).map((s) => ({
     key: s.key,
     label: s.label,
@@ -193,6 +245,17 @@ export function useProblemFlow(language: Language) {
       track('challenge_arrived', { id: initialChallenge.id });
     }
   }, [initialChallenge]);
+
+  // If the URL claimed a challenge (/p/<id>) but the id wasn't found,
+  // clear it so reload doesn't loop the same fallback. One-shot at mount.
+  useEffect(() => {
+    if (initialChallenge) return;
+    if (typeof window === 'undefined') return;
+    if (window.location.pathname.startsWith('/p/')) {
+      clearChallengeHash();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Lifetime view of attempts: persisted log unioned with this-session
   // attempts, deduped latest-wins (session wins on overlap, since it's the
@@ -256,7 +319,7 @@ export function useProblemFlow(language: Language) {
       // problem shown). Avoids noise for users who hit the page and bail
       // before any state worth reporting exists.
       if (s.attempts === 0 && s.solvedCount === 0) {
-        // Still useful to know the page-load-and-leave case — emit a
+        // Still useful to know the page-load-and-leave case - emit a
         // minimal event so we can distinguish bounces from sessions.
         track('session_end', {
           solved: 0,
@@ -286,8 +349,14 @@ export function useProblemFlow(language: Language) {
       id: currentProblem.id,
       kind: currentProblem.kind,
       difficulty: currentProblem.difficulty,
+      mode: routeMode,
     });
-  }, [currentProblem.id, currentProblem.kind, currentProblem.difficulty]);
+  }, [
+    currentProblem.id,
+    currentProblem.kind,
+    currentProblem.difficulty,
+    routeMode,
+  ]);
 
   useEffect(() => {
     if (reflection) {
@@ -315,27 +384,63 @@ export function useProblemFlow(language: Language) {
       const hadParseError = classifications.some(
         ({ c }) => c.result === 'parse_error'
       );
+      const hadAlmost = classifications.some(({ c }) => c.result === 'almost');
+      const allCorrect =
+        !hadParseError &&
+        classifications.every(({ c }) => c.result === 'correct');
+      const wrongCount = classifications.filter(
+        ({ c }) => c.result !== 'correct'
+      ).length;
+
+      track('submit', {
+        id: currentProblem.id,
+        kind: currentProblem.kind,
+        difficulty: currentProblem.difficulty,
+        mode: routeMode,
+        all_correct: allCorrect,
+        had_parse_error: hadParseError,
+        had_almost: hadAlmost,
+        wrong_count: wrongCount,
+        retry: retryUsed,
+        challenge: isChallengeMode,
+      });
 
       if (hadParseError) {
-        track('parse_error', { id: currentProblem.id });
-      } else {
-        const allCorrect = classifications.every(
-          ({ c }) => c.result === 'correct'
+        const offending = classifications.filter(
+          ({ c }) => c.result === 'parse_error'
         );
-        track('submit', {
+        track('parse_error', {
           id: currentProblem.id,
-          kind: currentProblem.kind,
+          mode: routeMode,
+          field: offending.map(({ spec }) => spec.key).join('|'),
+          input: offending.map(({ userAnswer }) => userAnswer).join('|'),
+        });
+      }
+
+      if (allCorrect) {
+        track('solved', {
+          id: currentProblem.id,
           difficulty: currentProblem.difficulty,
-          all_correct: allCorrect,
+          mode: routeMode,
           retry: retryUsed,
           challenge: isChallengeMode,
         });
-        if (allCorrect) {
-          track('solved', {
+        // Only credit the daily when the user is actually on the /daily
+        // surface. If they happen to get today's problem via random practice,
+        // we deliberately don't mark the daily done - the daily is a return
+        // surface, and forcing them to come back to /daily protects that loop.
+        if (
+          isDaily &&
+          currentProblem.id === dailyProblemId &&
+          !dailySolvedToday
+        ) {
+          recordDailySolve(currentProblem.id);
+          setDailySolvedToday(true);
+          track('daily_solved', {
             id: currentProblem.id,
-            difficulty: currentProblem.difficulty,
-            retry: retryUsed,
-            challenge: isChallengeMode,
+            // Streak after this solve - getCurrentStreak walks from today
+            // back through consecutive recorded solves.
+            streak: getCurrentStreak(),
           });
         }
       }
@@ -353,10 +458,6 @@ export function useProblemFlow(language: Language) {
       const result: SubmissionResult = { lines, hadParseError };
 
       if (!hadParseError) {
-        const allCorrect = classifications.every(
-          ({ c }) => c.result === 'correct'
-        );
-
         // Record into the session-attempt log used by the every-5 reflection
         // and the session-stats panel. Skipped for challenge mode (one-off)
         // and for retries (the original attempt is already recorded).
@@ -375,7 +476,7 @@ export function useProblemFlow(language: Language) {
 
         // Persist to localStorage only outside challenge mode and only when
         // the shape fits the Attempt schema (not multi-method). Multi-method,
-        // challenge, and retry submissions are session-only by design — the
+        // challenge, and retry submissions are session-only by design - the
         // first attempt is the recorded one.
         const isSingleTime =
           currentProblem.kind === 'datastructure' ||
@@ -428,6 +529,10 @@ export function useProblemFlow(language: Language) {
       shownCount,
       seenIds,
       solvedIds,
+      dailyProblemId,
+      dailySolvedToday,
+      isDaily,
+      routeMode,
     ]
   );
 
@@ -469,15 +574,36 @@ export function useProblemFlow(language: Language) {
   ]);
 
   const retry = useCallback(() => {
-    track('retry', { id: currentProblem.id });
+    track('retry', { id: currentProblem.id, mode: routeMode });
     setLastResult(null);
     setRetryUsed(true);
     setPendingNext(null);
-  }, [currentProblem.id]);
+  }, [currentProblem.id, routeMode]);
+
+  // "Show solution" - reveal the canonical answer without counting as an
+  // attempt. Doesn't update sessionAttempts, persistedAttempts, or solvedCount;
+  // doesn't fire `solved`. Tracked separately so we can see how often users
+  // skip vs try.
+  const revealSolution = useCallback(() => {
+    const specs = specsFor(currentProblem);
+    track('show_solution', {
+      id: currentProblem.id,
+      kind: currentProblem.kind,
+      difficulty: currentProblem.difficulty,
+      mode: routeMode,
+    });
+    const lines: ResultLine[] = specs.map((spec) => ({
+      label: spec.label,
+      state: 'wrong',
+      userAnswer: '-',
+      canonicalAnswer: spec.canonical,
+    }));
+    setLastResult({ lines, hadParseError: false, solutionShown: true });
+  }, [currentProblem, routeMode]);
 
   // Programmatic in-app navigation to a specific problem. Used by the
   // session-stats panel to redo a missed problem without losing session
-  // state. Unlike URL-mounted challenge mode, this is a normal attempt — a
+  // state. Unlike URL-mounted challenge mode, this is a normal attempt - a
   // successful redo updates the session log, the localStorage attempt log,
   // and the derived solved count.
   const goToProblem = useCallback((id: string) => {
@@ -493,12 +619,44 @@ export function useProblemFlow(language: Language) {
     }
   }, []);
 
+  // Nudge to try races, shown after the user has solved 3 or 4 problems
+  // (lifetime). Gated on:
+  //  - sessionAttempts.length > 0 → don't greet returning users with this on
+  //    a fresh page load; race nudges are an organic, mid-session prompt.
+  //  - !reflection → reflection at multiples of 5 takes precedence.
+  // Once the user is mid-session and has crossed solve 3, race wins over the
+  // daily nudge - they've earned the cue.
+  const raceNudge =
+    !isChallengeMode &&
+    !reflection &&
+    sessionAttempts.length > 0 &&
+    solvedCount >= 3 &&
+    solvedCount <= 4
+      ? "you're warmed up"
+      : null;
+
+  // Welcome message for returning users on a fresh page (no in-session
+  // activity yet) once today's daily is already in the bag and no other
+  // banner has something more timely to say. Only fires in practice mode -
+  // on /daily this would be the wrong framing (already saying "today's
+  // daily is done").
+  const welcomeBack =
+    !isChallengeMode &&
+    !isDaily &&
+    !reflection &&
+    dailySolvedToday &&
+    sessionAttempts.length === 0 &&
+    solvedCount > 0
+      ? 'practice mode · ready for another rep?'
+      : null;
+
   return {
     currentProblem,
     fields,
     submit,
     next,
     retry,
+    revealSolution,
     goToProblem,
     lastResult,
     solvedCount,
@@ -507,6 +665,13 @@ export function useProblemFlow(language: Language) {
     isChallengeMode,
     retryUsed,
     reflection,
+    raceNudge,
+    welcomeBack,
+    dailyProblemId,
+    dailyDate,
+    dailySolvedToday,
+    dailyHasStreak,
+    dailyStreak,
     nextProblemPreview: pendingNext?.problem ?? null,
   };
 }

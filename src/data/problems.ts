@@ -27,7 +27,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'Single linear pass with a hash lookup at each step — **O(n)** time. The map stores at most `n` entries, giving **O(n)** auxiliary space. The hash map turns the inner search from O(n) into O(1).',
+      'Single linear pass with a hash lookup at each step - **O(n)** time. The map stores at most `n` entries, giving **O(n)** auxiliary space. The hash map turns the inner search from O(n) into O(1).',
     concept: 'hashmap as a complement lookup',
     topic_tags: ['arrays', 'hashmap'],
     difficulty: 'easy',
@@ -57,7 +57,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'One pass with O(1) set membership and insertion — **O(n)** time. The set holds up to `n` elements in the worst case, **O(n)** space. The naive nested-loop alternative is O(n²); the hash set buys linearity.',
+      'One pass with O(1) set membership and insertion - **O(n)** time. The set holds up to `n` elements in the worst case, **O(n)** space. The naive nested-loop alternative is O(n²); the hash set buys linearity.',
     concept: 'set membership for O(1) lookups',
     topic_tags: ['arrays', 'hashset'],
     difficulty: 'easy',
@@ -93,7 +93,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'Two linear passes over the strings — **O(n)** time. The counter array is fixed at 26 slots regardless of input, so space is **O(1)**. If the alphabet were unbounded the answer would shift to O(n) space.',
+      'Two linear passes over the strings - **O(n)** time. The counter array is fixed at 26 slots regardless of input, so space is **O(1)**. If the alphabet were unbounded the answer would shift to O(n) space.',
     concept: 'fixed-alphabet counting collapses to constant space',
     topic_tags: ['strings', 'counting'],
     difficulty: 'medium',
@@ -175,7 +175,7 @@ export const problems: Problem[] = [
       space: ['O(n)'],
     },
     explanation:
-      'Two linear passes — **O(n)** time. By convention the output array is excluded from auxiliary space, so this is **O(1)** auxiliary; only `left` and `right` accumulators are kept. (If you count the output, it is O(n).)',
+      'Two linear passes - **O(n)** time. By convention the output array is excluded from auxiliary space, so this is **O(1)** auxiliary; only `left` and `right` accumulators are kept. (If you count the output, it is O(n).)',
     concept: 'prefix/suffix accumulation in two passes',
     topic_tags: ['arrays', 'prefix-suffix'],
     difficulty: 'medium',
@@ -205,7 +205,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'Kadane scans once, keeping a single running best — **O(n)** time, **O(1)** space. The naive O(n²) brute force becomes linear once you notice the running max only needs the previous endpoint, not all of them.',
+      'Kadane scans once, keeping a single running best - **O(n)** time, **O(1)** space. The naive O(n²) brute force becomes linear once you notice the running max only needs the previous endpoint, not all of them.',
     concept: 'rolling DP with O(1) state',
     topic_tags: ['arrays', 'kadane', 'dp'],
     difficulty: 'easy',
@@ -236,7 +236,9 @@ export const problems: Problem[] = [
   while (left < right) {
     while (left < right && !isAlnum(s[left])) left++;
     while (left < right && !isAlnum(s[right])) right--;
-    if (s[left].toLowerCase() !== s[right].toLowerCase()) return false;
+    const a = s[left].toLowerCase();
+    const b = s[right].toLowerCase();
+    if (a !== b) return false;
     left++;
     right--;
   }
@@ -246,7 +248,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'The two pointers together cover each character at most once — **O(n)** total. Only two indices are tracked, so space is **O(1)**. The nested skip-loops can fool you into thinking it is quadratic, but the inner work is amortized over the outer.',
+      'The two pointers together cover each character at most once - **O(n)** total. Only two indices are tracked, so space is **O(1)**. The nested skip-loops can fool you into thinking it is quadratic, but the inner work is amortized over the outer.',
     concept: 'amortized inner loop in a two-pointer scan',
     topic_tags: ['strings', 'two-pointers'],
     difficulty: 'easy',
@@ -261,44 +263,52 @@ export const problems: Problem[] = [
     nums.sort()
     res = []
     n = len(nums)
+
+    def skip_dups(i, step, bound):
+        while i != bound and nums[i] == nums[i + step]:
+            i += step
+        return i
+
     for i in range(n - 2):
         if i > 0 and nums[i] == nums[i - 1]:
             continue
         lo, hi = i + 1, n - 1
         while lo < hi:
             s = nums[i] + nums[lo] + nums[hi]
-            if s == 0:
-                res.append([nums[i], nums[lo], nums[hi]])
-                while lo < hi and nums[lo] == nums[lo + 1]:
-                    lo += 1
-                while lo < hi and nums[hi] == nums[hi - 1]:
-                    hi -= 1
+            if s < 0:
                 lo += 1
+                continue
+            if s > 0:
                 hi -= 1
-            elif s < 0:
-                lo += 1
-            else:
-                hi -= 1
+                continue
+            res.append([nums[i], nums[lo], nums[hi]])
+            lo = skip_dups(lo, 1, hi)
+            hi = skip_dups(hi, -1, lo)
+            lo += 1
+            hi -= 1
     return res`,
       javascript: `function threeSum(nums) {
   nums.sort((a, b) => a - b);
   const res = [];
   const n = nums.length;
+  function skipDups(i, step, bound) {
+    while (i !== bound && nums[i] === nums[i + step]) {
+      i += step;
+    }
+    return i;
+  }
   for (let i = 0; i < n - 2; i++) {
     if (i > 0 && nums[i] === nums[i - 1]) continue;
     let lo = i + 1, hi = n - 1;
     while (lo < hi) {
       const s = nums[i] + nums[lo] + nums[hi];
-      if (s === 0) {
-        res.push([nums[i], nums[lo], nums[hi]]);
-        while (lo < hi && nums[lo] === nums[lo + 1]) lo++;
-        while (lo < hi && nums[hi] === nums[hi - 1]) hi--;
-        lo++; hi--;
-      } else if (s < 0) {
-        lo++;
-      } else {
-        hi--;
-      }
+      if (s < 0) { lo++; continue; }
+      if (s > 0) { hi--; continue; }
+      res.push([nums[i], nums[lo], nums[hi]]);
+      lo = skipDups(lo, 1, hi);
+      hi = skipDups(hi, -1, lo);
+      lo++;
+      hi--;
     }
   }
   return res;
@@ -311,7 +321,7 @@ export const problems: Problem[] = [
       space: ['O(n)'],
     },
     explanation:
-      'Sorting is **O(n log n)**, then for each `i` the two-pointer scan is **O(n)** — quadratic dominates, total **O(n²)**. Auxiliary space is **O(1)** if we ignore the output and the in-place sort; some sort implementations use O(log n) stack.',
+      'Sorting is **O(n log n)**, then for each `i` the two-pointer scan is **O(n)** - quadratic dominates, total **O(n²)**. Auxiliary space is **O(1)** if we ignore the output and the in-place sort; some sort implementations use O(log n) stack.',
     concept: 'sort + two-pointer reduces a dimension',
     topic_tags: ['arrays', 'two-pointers', 'sorting'],
     difficulty: 'hard',
@@ -348,7 +358,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'Pointers move toward each other, each step advancing one of them — **O(n)** total iterations. Only two indices and one running max are kept, **O(1)** space. The greedy choice (always advance the shorter side) is what unlocks linearity.',
+      'Pointers move toward each other, each step advancing one of them - **O(n)** total iterations. Only two indices and one running max are kept, **O(1)** space. The greedy choice (always advance the shorter side) is what unlocks linearity.',
     concept: 'monotone two-pointer convergence',
     topic_tags: ['arrays', 'two-pointers', 'greedy'],
     difficulty: 'medium',
@@ -383,7 +393,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'A single pass tracking the running minimum and the best gap so far — **O(n)** time, **O(1)** space. The brute-force "all pairs" version is O(n²); recognizing that you only need the min-so-far on the left is the trick.',
+      'A single pass tracking the running minimum and the best gap so far - **O(n)** time, **O(1)** space. The brute-force "all pairs" version is O(n²); recognizing that you only need the min-so-far on the left is the trick.',
     concept: 'running minimum with running best',
     topic_tags: ['arrays', 'sliding-window', 'dp'],
     difficulty: 'easy',
@@ -424,7 +434,7 @@ export const problems: Problem[] = [
       space: ['O(n)', 'O(1)'],
     },
     explanation:
-      'Each character enters and leaves the window at most once — **O(n)** time. The map holds at most one entry per distinct character, bounded by **O(min(n, c))** where `c` is the alphabet size; treating `c` as a constant gives **O(1)**. Either form is defensible.',
+      'Each character enters and leaves the window at most once - **O(n)** time. The map holds at most one entry per distinct character, bounded by **O(min(n, c))** where `c` is the alphabet size; treating `c` as a constant gives **O(1)**. Either form is defensible.',
     concept: 'sliding window with bounded auxiliary state',
     topic_tags: ['strings', 'sliding-window', 'hashmap'],
     difficulty: 'hard',
@@ -470,7 +480,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'The window shifts forward only — each index enters and leaves at most once, giving **O(n)** time despite the inner while-loop. The counts map holds at most one entry per alphabet character, so space is **O(1)** for a fixed alphabet. The subtle part: `max_count` is never decremented, but the overall answer remains correct because the window size only matters at its peak.',
+      'The window shifts forward only - each index enters and leaves at most once, giving **O(n)** time despite the inner while-loop. The counts map holds at most one entry per alphabet character, so space is **O(1)** for a fixed alphabet. The subtle part: `max_count` is never decremented, but the overall answer remains correct because the window size only matters at its peak.',
     concept: 'amortized window growth',
     topic_tags: ['strings', 'sliding-window'],
     difficulty: 'hard',
@@ -509,7 +519,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(log n)',
     space_complexity: 'O(1)',
     explanation:
-      'Each iteration halves the search range, so the loop runs at most ⌈log₂ n⌉ times — **O(log n)** time. Constant variables only, **O(1)** space. The array must already be sorted.',
+      'Each iteration halves the search range, so the loop runs at most ⌈log₂ n⌉ times - **O(log n)** time. Constant variables only, **O(1)** space. The array must already be sorted.',
     concept: 'halving the search space',
     topic_tags: ['arrays', 'binary-search'],
     difficulty: 'easy',
@@ -543,11 +553,17 @@ export const problems: Problem[] = [
     const mid = (lo + hi) >> 1;
     if (arr[mid] === target) return mid;
     if (arr[lo] <= arr[mid]) {
-      if (arr[lo] <= target && target < arr[mid]) hi = mid - 1;
-      else lo = mid + 1;
+      if (arr[lo] <= target && target < arr[mid]) {
+        hi = mid - 1;
+      } else {
+        lo = mid + 1;
+      }
     } else {
-      if (arr[mid] < target && target <= arr[hi]) lo = mid + 1;
-      else hi = mid - 1;
+      if (arr[mid] < target && target <= arr[hi]) {
+        lo = mid + 1;
+      } else {
+        hi = mid - 1;
+      }
     }
   }
   return -1;
@@ -556,7 +572,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(log n)',
     space_complexity: 'O(1)',
     explanation:
-      'Even with the rotation, each iteration eliminates half the search space — **O(log n)** time, **O(1)** space. The branching is more involved but the halving is preserved.',
+      'Even with the rotation, each iteration eliminates half the search space - **O(log n)** time, **O(1)** space. The branching is more involved but the halving is preserved.',
     concept: 'halving despite a structural irregularity',
     topic_tags: ['arrays', 'binary-search'],
     difficulty: 'medium',
@@ -589,7 +605,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(log n)',
     space_complexity: 'O(1)',
     explanation:
-      'Binary-search variant comparing `mid` to `hi` to decide which half holds the rotation point — **O(log n)** time, **O(1)** space. The naive linear scan would be O(n).',
+      'Binary-search variant comparing `mid` to `hi` to decide which half holds the rotation point - **O(log n)** time, **O(1)** space. The naive linear scan would be O(n).',
     concept: 'binary search on a comparison invariant',
     topic_tags: ['arrays', 'binary-search'],
     difficulty: 'medium',
@@ -625,7 +641,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'Single traversal flipping each pointer — **O(n)** time. Three reused locals, **O(1)** space. The recursive form uses O(n) stack and is sometimes accepted; this iterative form is canonical.',
+      'Single traversal flipping each pointer - **O(n)** time. Three reused locals, **O(1)** space. The recursive form uses O(n) stack and is sometimes accepted; this iterative form is canonical.',
     concept: 'in-place pointer reversal',
     topic_tags: ['linked-list'],
     difficulty: 'easy',
@@ -657,7 +673,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'The fast pointer moves twice per step; if a cycle exists, the gap between fast and slow shrinks by one each round — they meet within **O(n)** steps. Two pointers only, **O(1)** space. The hash-set alternative is O(n) space.',
+      'The fast pointer moves twice per step; if a cycle exists, the gap between fast and slow shrinks by one each round - they meet within **O(n)** steps. Two pointers only, **O(1)** space. The hash-set alternative is O(n) space.',
     concept: 'tortoise-and-hare meets in O(n)',
     topic_tags: ['linked-list', 'two-pointers'],
     difficulty: 'medium',
@@ -701,7 +717,7 @@ export const problems: Problem[] = [
     time_complexity: 'O(n + m)',
     space_complexity: 'O(1)',
     explanation:
-      'Each node from each list is visited exactly once and re-linked in place — **O(n + m)** time. We allocate only the dummy head, **O(1)** auxiliary space. (No new nodes are created; the result is woven from existing ones.)',
+      'Each node from each list is visited exactly once and re-linked in place - **O(n + m)** time. We allocate only the dummy head, **O(1)** auxiliary space. (No new nodes are created; the result is woven from existing ones.)',
     concept: 'linear merge over two sorted streams',
     topic_tags: ['linked-list', 'multivariable'],
     difficulty: 'medium',
@@ -762,7 +778,7 @@ class LRUCache:
     ],
     space_complexity: 'O(c)',
     explanation:
-      'Both `get` and `put` use only O(1) hash and pointer operations — **O(1)** per operation. The cache holds at most `c` entries (the capacity), giving **O(c)** space overall. The trick: a hashmap alone is not enough — you also need ordering, which is what makes the doubly-linked-list pairing necessary in a hand-rolled implementation.',
+      'Both `get` and `put` use only O(1) hash and pointer operations - **O(1)** per operation. The cache holds at most `c` entries (the capacity), giving **O(c)** space overall. The trick: a hashmap alone is not enough - you also need ordering, which is what makes the doubly-linked-list pairing necessary in a hand-rolled implementation.',
     concept: 'hashmap + doubly linked list for O(1) per operation',
     topic_tags: ['linked-list', 'hashmap', 'design', 'amortized'],
     difficulty: 'hard',
@@ -778,7 +794,10 @@ class LRUCache:
       python: `def invert_tree(node):
     if not node:
         return None
-    node.left, node.right = invert_tree(node.right), invert_tree(node.left)
+    left = invert_tree(node.right)
+    right = invert_tree(node.left)
+    node.left = left
+    node.right = right
     return node`,
       javascript: `function invertTree(node) {
   if (!node) return null;
@@ -795,7 +814,7 @@ class LRUCache:
       space: ['O(log n)', 'O(n)'],
     },
     explanation:
-      'Each node is visited once and has its children swapped — **O(n)** time. Auxiliary space is the recursion depth, **O(h)** — that is `O(log n)` for a balanced tree and `O(n)` for a degenerate one.',
+      'Each node is visited once and has its children swapped - **O(n)** time. Auxiliary space is the recursion depth, **O(h)** - that is `O(log n)` for a balanced tree and `O(n)` for a degenerate one.',
     concept: 'tree recursion: nodes vs stack depth',
     topic_tags: ['trees', 'recursion'],
     difficulty: 'medium',
@@ -812,10 +831,14 @@ class LRUCache:
       python: `def max_depth(node):
     if not node:
         return 0
-    return 1 + max(max_depth(node.left), max_depth(node.right))`,
+    left = max_depth(node.left)
+    right = max_depth(node.right)
+    return 1 + max(left, right)`,
       javascript: `function maxDepth(node) {
   if (!node) return 0;
-  return 1 + Math.max(maxDepth(node.left), maxDepth(node.right));
+  const left = maxDepth(node.left);
+  const right = maxDepth(node.right);
+  return 1 + Math.max(left, right);
 }`,
     },
     time_complexity: 'O(n)',
@@ -824,7 +847,7 @@ class LRUCache:
       space: ['O(log n)', 'O(n)'],
     },
     explanation:
-      'Every node is visited exactly once, **O(n)** time. The recursion stack depth is the tree height **O(h)** — `log n` balanced, `n` degenerate.',
+      'Every node is visited exactly once, **O(n)** time. The recursion stack depth is the tree height **O(h)** - `log n` balanced, `n` degenerate.',
     concept: 'tree recursion: nodes vs stack depth',
     topic_tags: ['trees', 'recursion'],
     difficulty: 'medium',
@@ -845,12 +868,16 @@ class LRUCache:
         return False
     if p.val != q.val:
         return False
-    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)`,
+    left_same = is_same_tree(p.left, q.left)
+    right_same = is_same_tree(p.right, q.right)
+    return left_same and right_same`,
       javascript: `function isSameTree(p, q) {
   if (!p && !q) return true;
   if (!p || !q) return false;
   if (p.val !== q.val) return false;
-  return isSameTree(p.left, q.left) && isSameTree(p.right, q.right);
+  const leftSame = isSameTree(p.left, q.left);
+  const rightSame = isSameTree(p.right, q.right);
+  return leftSame && rightSame;
 }`,
     },
     time_complexity: 'O(n)',
@@ -859,7 +886,7 @@ class LRUCache:
       space: ['O(log n)', 'O(n)'],
     },
     explanation:
-      'In the worst case (trees identical) every node is visited — **O(n)** time. Recursion stack uses **O(h)** space; balanced is `log n`, skewed is `n`. Early exit on mismatch only improves the constant, not the asymptotic.',
+      'In the worst case (trees identical) every node is visited - **O(n)** time. Recursion stack uses **O(h)** space; balanced is `log n`, skewed is `n`. Early exit on mismatch only improves the constant, not the asymptotic.',
     concept: 'tree recursion: nodes vs stack depth',
     topic_tags: ['trees', 'recursion'],
     difficulty: 'easy',
@@ -873,14 +900,16 @@ class LRUCache:
     id: 'validate-bst',
     category: 'trees',
     code: {
-      python: `def is_valid_bst(node, lo=float('-inf'), hi=float('inf')):
+      python: `INF = float('inf')
+
+def is_valid_bst(node, lo=-INF, hi=INF):
     if not node:
         return True
     if not (lo < node.val < hi):
         return False
     return (is_valid_bst(node.left, lo, node.val) and
             is_valid_bst(node.right, node.val, hi))`,
-      javascript: `function isValidBST(node, lo = -Infinity, hi = Infinity) {
+      javascript: `function isValidBST(node, lo=-Infinity, hi=Infinity) {
   if (!node) return true;
   if (node.val <= lo || node.val >= hi) return false;
   return isValidBST(node.left, lo, node.val)
@@ -893,7 +922,7 @@ class LRUCache:
       space: ['O(log n)', 'O(n)'],
     },
     explanation:
-      'Each node is checked once with O(1) bounds work — **O(n)** time. Recursion depth is the tree height **O(h)** — `log n` balanced, `n` skewed.',
+      'Each node is checked once with O(1) bounds work - **O(n)** time. Recursion depth is the tree height **O(h)** - `log n` balanced, `n` skewed.',
     concept: 'tree recursion with bounds carried in args',
     topic_tags: ['trees', 'recursion', 'bst'],
     difficulty: 'medium',
@@ -946,7 +975,7 @@ def level_order(root):
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'Each node is enqueued and dequeued once — **O(n)** time. The queue can hold up to `n/2` nodes (the widest level) so space is **O(n)**, not O(h).',
+      'Each node is enqueued and dequeued once - **O(n)** time. The queue can hold up to `n/2` nodes (the widest level) so space is **O(n)**, not O(h).',
     concept: 'BFS queue width matches the widest level',
     topic_tags: ['trees', 'bfs', 'queue'],
     difficulty: 'medium',
@@ -979,7 +1008,7 @@ def level_order(root):
       space: ['O(log n)', 'O(n)'],
     },
     explanation:
-      'In the worst case the recursion visits every node — **O(n)** time. Recursion depth equals tree height **O(h)** — `log n` balanced, `n` degenerate. The post-order pattern (recurse first, decide after) is the trick that makes this concise.',
+      'In the worst case the recursion visits every node - **O(n)** time. Recursion depth equals tree height **O(h)** - `log n` balanced, `n` degenerate. The post-order pattern (recurse first, decide after) is the trick that makes this concise.',
     concept: 'post-order recursion deciding from below',
     topic_tags: ['trees', 'recursion'],
     difficulty: 'hard',
@@ -1023,7 +1052,9 @@ def level_order(root):
   insert(word) {
     let node = this;
     for (const c of word) {
-      if (!node.children.has(c)) node.children.set(c, new Trie());
+      if (!node.children.has(c)) {
+        node.children.set(c, new Trie());
+      }
       node = node.children.get(c);
     }
     node.end = true;
@@ -1044,7 +1075,7 @@ def level_order(root):
     ],
     space_complexity: 'O(n)',
     explanation:
-      'Both insert and search walk one node per character — **O(k)** time per operation, where `k` is the length of the word. The trie as a whole holds one node per distinct prefix; total nodes are bounded by total characters across all inserted words, giving **O(n)** space overall.',
+      'Both insert and search walk one node per character - **O(k)** time per operation, where `k` is the length of the word. The trie as a whole holds one node per distinct prefix; total nodes are bounded by total characters across all inserted words, giving **O(n)** space overall.',
     concept: 'operation cost vs structure size',
     topic_tags: ['tries', 'strings'],
     difficulty: 'medium',
@@ -1071,8 +1102,9 @@ def top_k_frequent(nums, k):
     return [num for _, num in heap]`,
       javascript: `function topKFrequent(nums, k) {
   const counts = new Map();
-  for (const x of nums) counts.set(x, (counts.get(x) || 0) + 1);
-
+  for (const x of nums) {
+    counts.set(x, (counts.get(x) || 0) + 1);
+  }
   // min-heap keyed by frequency, capped at size k
   const heap = new MinHeap();
   for (const [num, freq] of counts) {
@@ -1085,7 +1117,7 @@ def top_k_frequent(nums, k):
     time_complexity: 'O(n log k)',
     space_complexity: 'O(n + k)',
     explanation:
-      'Counting all numbers is **O(n)**; pushing each of the up-to-`n` distinct counts into a size-`k` heap costs **O(log k)** per push, total **O(n log k)**. The counts map holds up to `n` distinct values; the heap holds `k` — total space **O(n + k)**.',
+      'Counting all numbers is **O(n)**; pushing each of the up-to-`n` distinct counts into a size-`k` heap costs **O(log k)** per push, total **O(n log k)**. The counts map holds up to `n` distinct values; the heap holds `k` - total space **O(n + k)**.',
     concept: 'bounded heap keeps the log factor small',
     topic_tags: ['arrays', 'heap', 'hashmap', 'multivariable'],
     difficulty: 'hard',
@@ -1108,9 +1140,11 @@ class MedianFinder:
 
     def add_num(self, num):
         heapq.heappush(self.lo, -num)
-        heapq.heappush(self.hi, -heapq.heappop(self.lo))
+        top_lo = -heapq.heappop(self.lo)
+        heapq.heappush(self.hi, top_lo)
         if len(self.hi) > len(self.lo):
-            heapq.heappush(self.lo, -heapq.heappop(self.hi))
+            top_hi = heapq.heappop(self.hi)
+            heapq.heappush(self.lo, -top_hi)
 
     def find_median(self):
         if len(self.lo) > len(self.hi):
@@ -1129,7 +1163,9 @@ class MedianFinder:
     }
   }
   findMedian() {
-    if (this.lo.size() > this.hi.size()) return this.lo.peek();
+    if (this.lo.size() > this.hi.size()) {
+      return this.lo.peek();
+    }
     return (this.lo.peek() + this.hi.peek()) / 2;
   }
 }`,
@@ -1140,7 +1176,7 @@ class MedianFinder:
     ],
     space_complexity: 'O(n)',
     explanation:
-      '`addNum` does a constant number of heap pushes/pops, each **O(log n)** — so per-add time is **O(log n)**. `findMedian` only peeks both heap tops in **O(1)**. The two heaps together hold all `n` elements seen so far, giving **O(n)** total space.',
+      '`addNum` does a constant number of heap pushes/pops, each **O(log n)** - so per-add time is **O(log n)**. `findMedian` only peeks both heap tops in **O(1)**. The two heaps together hold all `n` elements seen so far, giving **O(n)** total space.',
     concept: 'two heaps balance for log-time insertion',
     topic_tags: ['heap', 'design', 'two-heaps'],
     difficulty: 'hard',
@@ -1160,7 +1196,9 @@ class MedianFinder:
     count = 0
 
     def dfs(r, c):
-        if r < 0 or c < 0 or r >= m or c >= n or grid[r][c] != '1':
+        if r < 0 or c < 0 or r >= m or c >= n:
+            return
+        if grid[r][c] != '1':
             return
         grid[r][c] = '0'
         dfs(r + 1, c)
@@ -1179,7 +1217,8 @@ class MedianFinder:
   const m = grid.length, n = grid[0].length;
   let count = 0;
   function dfs(r, c) {
-    if (r < 0 || c < 0 || r >= m || c >= n || grid[r][c] !== '1') return;
+    if (r < 0 || c < 0 || r >= m || c >= n) return;
+    if (grid[r][c] !== '1') return;
     grid[r][c] = '0';
     dfs(r + 1, c);
     dfs(r - 1, c);
@@ -1204,7 +1243,7 @@ class MedianFinder:
       space: ['O(m · n)', 'O(mn)'],
     },
     explanation:
-      'Each cell is visited at most once across all DFS calls — total time **O(m · n)**. The recursion stack can grow to the size of the largest island, which in the worst case is the whole grid — **O(m · n)** auxiliary space.',
+      'Each cell is visited at most once across all DFS calls - total time **O(m · n)**. The recursion stack can grow to the size of the largest island, which in the worst case is the whole grid - **O(m · n)** auxiliary space.',
     concept: 'amortized DFS over a grid',
     topic_tags: ['graphs', 'grid', 'dfs', 'multivariable'],
     difficulty: 'medium',
@@ -1240,7 +1279,9 @@ class MedianFinder:
     if (visited.has(cur)) return visited.get(cur);
     const clone = { val: cur.val, neighbors: [] };
     visited.set(cur, clone);
-    for (const nb of cur.neighbors) clone.neighbors.push(dfs(nb));
+    for (const nb of cur.neighbors) {
+      clone.neighbors.push(dfs(nb));
+    }
     return clone;
   }
   return dfs(node);
@@ -1249,7 +1290,7 @@ class MedianFinder:
     time_complexity: 'O(v + e)',
     space_complexity: 'O(v)',
     explanation:
-      'Each vertex is cloned once and each edge is traversed once (twice in an undirected graph, still O(e)) — total time **O(V + E)**. The visited map holds one entry per vertex; the recursion stack is bounded by the longest path, also at most `V` — **O(V)** auxiliary.',
+      'Each vertex is cloned once and each edge is traversed once (twice in an undirected graph, still O(e)) - total time **O(V + E)**. The visited map holds one entry per vertex; the recursion stack is bounded by the longest path, also at most `V` - **O(V)** auxiliary.',
     concept: 'graph traversal: vertex + edge cost',
     topic_tags: ['graphs', 'dfs', 'hashmap', 'multivariable'],
     difficulty: 'hard',
@@ -1287,7 +1328,8 @@ class MedianFinder:
             return False
     return True`,
       javascript: `function canFinish(numCourses, prerequisites) {
-  const graph = Array.from({ length: numCourses }, () => []);
+  const graph = [];
+  for (let i = 0; i < numCourses; i++) graph.push([]);
   for (const [a, b] of prerequisites) graph[b].push(a);
   const state = new Array(numCourses).fill(0);
   function dfs(node) {
@@ -1309,7 +1351,7 @@ class MedianFinder:
     time_complexity: 'O(v + e)',
     space_complexity: 'O(v + e)',
     explanation:
-      'Each vertex is visited once via the three-color DFS, each edge traversed once — **O(V + E)** time. The adjacency list itself is **O(V + E)** space; the recursion stack is bounded by `V`. Combined: **O(V + E)**.',
+      'Each vertex is visited once via the three-color DFS, each edge traversed once - **O(V + E)** time. The adjacency list itself is **O(V + E)** space; the recursion stack is bounded by `V`. Combined: **O(V + E)**.',
     concept: 'graph traversal: vertex + edge cost',
     topic_tags: ['graphs', 'dfs', 'cycle-detection', 'multivariable'],
     difficulty: 'hard',
@@ -1323,18 +1365,22 @@ class MedianFinder:
     id: 'pacific-atlantic',
     category: 'graphs',
     code: {
-      python: `def pacific_atlantic(heights):
+      python: `DIRS = [(1, 0), (-1, 0), (0, 1), (0, -1)]
+
+
+def pacific_atlantic(heights):
     if not heights:
         return []
     m, n = len(heights), len(heights[0])
     pac, atl = set(), set()
 
     def dfs(r, c, visited, prev):
-        if ((r, c) in visited or r < 0 or c < 0
-                or r >= m or c >= n or heights[r][c] < prev):
+        if r < 0 or c < 0 or r >= m or c >= n:
+            return
+        if (r, c) in visited or heights[r][c] < prev:
             return
         visited.add((r, c))
-        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+        for dr, dc in DIRS:
             dfs(r + dr, c + dc, visited, heights[r][c])
 
     for r in range(m):
@@ -1344,30 +1390,33 @@ class MedianFinder:
         dfs(0, c, pac, 0)
         dfs(m - 1, c, atl, 0)
     return [list(cell) for cell in pac & atl]`,
-      javascript: `function pacificAtlantic(heights) {
+      javascript: `const DIRS = [[1,0],[-1,0],[0,1],[0,-1]];
+
+function pacificAtlantic(heights) {
   if (!heights.length) return [];
   const m = heights.length, n = heights[0].length;
   const pac = new Set(), atl = new Set();
   function dfs(r, c, visited, prev) {
+    if (r < 0 || c < 0 || r >= m || c >= n) return;
     const key = r * n + c;
-    if (visited.has(key) || r < 0 || c < 0 || r >= m || c >= n
-        || heights[r][c] < prev) return;
+    if (visited.has(key)) return;
+    if (heights[r][c] < prev) return;
     visited.add(key);
-    for (const [dr, dc] of [[1, 0], [-1, 0], [0, 1], [0, -1]]) {
+    for (const [dr, dc] of DIRS) {
       dfs(r + dr, c + dc, visited, heights[r][c]);
     }
   }
-  for (let r = 0; r < m; r++) {
-    dfs(r, 0, pac, 0);
-    dfs(r, n - 1, atl, 0);
+  for (let i = 0; i < m; i++) {
+    dfs(i, 0, pac, 0);
+    dfs(i, n - 1, atl, 0);
   }
-  for (let c = 0; c < n; c++) {
-    dfs(0, c, pac, 0);
-    dfs(m - 1, c, atl, 0);
+  for (let i = 0; i < n; i++) {
+    dfs(0, i, pac, 0);
+    dfs(m - 1, i, atl, 0);
   }
-  const out = [];
-  for (const k of pac) if (atl.has(k)) out.push([Math.floor(k / n), k % n]);
-  return out;
+  return [...pac]
+    .filter((k) => atl.has(k))
+    .map((k) => [Math.floor(k / n), k % n]);
 }`,
     },
     time_complexity: 'O(m * n)',
@@ -1377,7 +1426,7 @@ class MedianFinder:
       space: ['O(m · n)', 'O(mn)'],
     },
     explanation:
-      'Two DFS traversals from the borders, each visiting every cell at most once — **O(m · n)** time. Both visited sets together hold up to `m · n` cells, and recursion stack matches; **O(m · n)** auxiliary.',
+      'Two DFS traversals from the borders, each visiting every cell at most once - **O(m · n)** time. Both visited sets together hold up to `m · n` cells, and recursion stack matches; **O(m · n)** auxiliary.',
     concept: 'multi-source DFS from grid boundary',
     topic_tags: ['graphs', 'grid', 'dfs', 'multivariable'],
     difficulty: 'hard',
@@ -1412,7 +1461,7 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'A single linear loop computing each step from the prior two — **O(n)** time. Only two rolling variables are kept, **O(1)** space. The naive recursive form (without memo) is the classic O(2ⁿ) trap.',
+      'A single linear loop computing each step from the prior two - **O(n)** time. Only two rolling variables are kept, **O(1)** space. The naive recursive form (without memo) is the classic O(2ⁿ) trap.',
     concept: 'rolling DP with O(1) state',
     topic_tags: ['dp', 'fibonacci'],
     difficulty: 'easy',
@@ -1439,7 +1488,7 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'One linear pass with two rolling DP values — **O(n)** time, **O(1)** space. The full DP table form is also O(n) space, but the rolling variables collapse it.',
+      'One linear pass with two rolling DP values - **O(n)** time, **O(1)** space. The full DP table form is also O(n) space, but the rolling variables collapse it.',
     concept: 'rolling DP with O(1) state',
     topic_tags: ['dp'],
     difficulty: 'medium',
@@ -1457,13 +1506,17 @@ class MedianFinder:
         for c in coins:
             if a - c >= 0:
                 dp[a] = min(dp[a], dp[a - c] + 1)
-    return dp[amount] if dp[amount] != amount + 1 else -1`,
+    if dp[amount] == amount + 1:
+        return -1
+    return dp[amount]`,
       javascript: `function coinChange(coins, amount) {
   const dp = new Array(amount + 1).fill(amount + 1);
   dp[0] = 0;
   for (let a = 1; a <= amount; a++) {
     for (const c of coins) {
-      if (a - c >= 0) dp[a] = Math.min(dp[a], dp[a - c] + 1);
+      if (a - c >= 0) {
+        dp[a] = Math.min(dp[a], dp[a - c] + 1);
+      }
     }
   }
   return dp[amount] === amount + 1 ? -1 : dp[amount];
@@ -1475,8 +1528,8 @@ class MedianFinder:
       time: ['O(n · t)', 'O(nt)'],
     },
     explanation:
-      'The DP fills `t + 1` cells; for each cell it tries all `n` coins — **O(n · t)** total. The DP array has `t + 1` entries, **O(t)** space. The dominant variable is the target value, not the input length — a classic pseudopolynomial.',
-    concept: 'pseudopolynomial DP — value drives the cost',
+      'The DP fills `t + 1` cells; for each cell it tries all `n` coins - **O(n · t)** total. The DP array has `t + 1` entries, **O(t)** space. The dominant variable is the target value, not the input length - a classic pseudopolynomial.',
+    concept: 'pseudopolynomial DP - value drives the cost',
     topic_tags: ['dp', 'multivariable'],
     difficulty: 'hard',
     variables: [
@@ -1505,7 +1558,9 @@ class MedianFinder:
   const dp = new Array(n).fill(1);
   for (let i = 1; i < n; i++) {
     for (let j = 0; j < i; j++) {
-      if (nums[j] < nums[i]) dp[i] = Math.max(dp[i], dp[j] + 1);
+      if (nums[j] < nums[i]) {
+        dp[i] = Math.max(dp[i], dp[j] + 1);
+      }
     }
   }
   return Math.max(...dp);
@@ -1517,7 +1572,7 @@ class MedianFinder:
       time: ['O(n^2)'],
     },
     explanation:
-      'Two nested loops over the array — **O(n²)** time. The DP array is **O(n)** space. There is an O(n log n) variant using binary search on a tails array; this O(n²) form is the textbook canonical.',
+      'Two nested loops over the array - **O(n²)** time. The DP array is **O(n)** space. There is an O(n log n) variant using binary search on a tails array; this O(n²) form is the textbook canonical.',
     concept: 'quadratic DP over index pairs',
     topic_tags: ['dp'],
     difficulty: 'medium',
@@ -1535,7 +1590,9 @@ class MedianFinder:
     for i in range(1, n + 1):
         for word in word_dict:
             wlen = len(word)
-            if wlen <= i and dp[i - wlen] and s[i - wlen:i] == word:
+            if wlen > i or not dp[i - wlen]:
+                continue
+            if s[i - wlen:i] == word:
                 dp[i] = True
                 break
     return dp[n]`,
@@ -1546,7 +1603,8 @@ class MedianFinder:
   for (let i = 1; i <= n; i++) {
     for (const word of wordDict) {
       const wlen = word.length;
-      if (wlen <= i && dp[i - wlen] && s.slice(i - wlen, i) === word) {
+      if (wlen > i || !dp[i - wlen]) continue;
+      if (s.slice(i - wlen, i) === word) {
         dp[i] = true;
         break;
       }
@@ -1561,7 +1619,7 @@ class MedianFinder:
       time: ['O(n^2 · m)', 'O(n^2 m)', 'O(n² · m)'],
     },
     explanation:
-      'For each of the `n` positions we try every dictionary word (`m` of them), and the substring comparison is up to `n` characters — **O(n² · m)** time. The DP array holds `n + 1` booleans, **O(n)** space.',
+      'For each of the `n` positions we try every dictionary word (`m` of them), and the substring comparison is up to `n` characters - **O(n² · m)** time. The DP array holds `n + 1` booleans, **O(n)** space.',
     concept: 'DP × dictionary scan, multivariable',
     topic_tags: ['dp', 'strings', 'multivariable'],
     difficulty: 'hard',
@@ -1590,8 +1648,9 @@ class MedianFinder:
   intervals.sort((a, b) => a[0] - b[0]);
   const res = [];
   for (const [start, end] of intervals) {
-    if (res.length && start <= res[res.length - 1][1]) {
-      res[res.length - 1][1] = Math.max(res[res.length - 1][1], end);
+    const last = res[res.length - 1];
+    if (last && start <= last[1]) {
+      last[1] = Math.max(last[1], end);
     } else {
       res.push([start, end]);
     }
@@ -1602,7 +1661,7 @@ class MedianFinder:
     time_complexity: 'O(n log n)',
     space_complexity: 'O(n)',
     explanation:
-      'Sorting dominates — **O(n log n)**. The sweep itself is linear. Output (and sort scratch) take **O(n)** space.',
+      'Sorting dominates - **O(n log n)**. The sweep itself is linear. Output (and sort scratch) take **O(n)** space.',
     concept: 'sort dominates a linear sweep',
     topic_tags: ['intervals', 'sorting'],
     difficulty: 'medium',
@@ -1615,30 +1674,39 @@ class MedianFinder:
     code: {
       python: `def insert(intervals, new_interval):
     res = []
-    i, n = 0, len(intervals)
+    n = len(intervals)
+    i = 0
+    # intervals strictly before the new one
     while i < n and intervals[i][1] < new_interval[0]:
         res.append(intervals[i])
         i += 1
-    while i < n and intervals[i][0] <= new_interval[1]:
-        new_interval[0] = min(new_interval[0], intervals[i][0])
-        new_interval[1] = max(new_interval[1], intervals[i][1])
+    # merge overlapping intervals
+    lo, hi = new_interval
+    while i < n and intervals[i][0] <= hi:
+        lo = min(lo, intervals[i][0])
+        hi = max(hi, intervals[i][1])
         i += 1
-    res.append(new_interval)
+    res.append([lo, hi])
     while i < n:
         res.append(intervals[i])
         i += 1
     return res`,
       javascript: `function insertInterval(intervals, newInterval) {
   const res = [];
-  let i = 0;
   const n = intervals.length;
-  while (i < n && intervals[i][1] < newInterval[0]) res.push(intervals[i++]);
-  while (i < n && intervals[i][0] <= newInterval[1]) {
-    newInterval[0] = Math.min(newInterval[0], intervals[i][0]);
-    newInterval[1] = Math.max(newInterval[1], intervals[i][1]);
+  let i = 0;
+  // intervals strictly before the new one
+  while (i < n && intervals[i][1] < newInterval[0]) {
+    res.push(intervals[i++]);
+  }
+  // merge overlapping intervals
+  let [lo, hi] = newInterval;
+  while (i < n && intervals[i][0] <= hi) {
+    lo = Math.min(lo, intervals[i][0]);
+    hi = Math.max(hi, intervals[i][1]);
     i++;
   }
-  res.push(newInterval);
+  res.push([lo, hi]);
   while (i < n) res.push(intervals[i++]);
   return res;
 }`,
@@ -1646,11 +1714,203 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'A single sweep over already-sorted intervals — **O(n)** time. The result list holds up to `n + 1` intervals, **O(n)** space. No sorting needed because the input is sorted by hypothesis.',
+      'A single sweep over already-sorted intervals - **O(n)** time. The result list holds up to `n + 1` intervals, **O(n)** space. No sorting needed because the input is sorted by hypothesis.',
     concept: 'linear sweep on already-sorted input',
     topic_tags: ['intervals'],
     difficulty: 'medium',
     variables: [{ name: 'n', meaning: 'number of input intervals' }],
+  },
+
+  // ===== Sorting algorithms (4) =====
+  {
+    kind: 'code',
+    id: 'bubble-sort',
+    category: 'sorting',
+    code: {
+      python: `def bubble_sort(arr):
+    n = len(arr)
+    for i in range(n):
+        for j in range(n - 1 - i):
+            if arr[j] > arr[j + 1]:
+                arr[j], arr[j + 1] = arr[j + 1], arr[j]
+    return arr`,
+      javascript: `function bubbleSort(arr) {
+  const n = arr.length;
+  for (let i = 0; i < n; i++) {
+    for (let j = 0; j < n - 1 - i; j++) {
+      if (arr[j] > arr[j + 1]) {
+        [arr[j], arr[j + 1]] = [arr[j + 1], arr[j]];
+      }
+    }
+  }
+  return arr;
+}`,
+    },
+    time_complexity: 'O(n^2)',
+    space_complexity: 'O(1)',
+    accepted_equivalent_forms: {
+      time: ['O(n²)', 'O(n*n)', 'O(n·n)'],
+    },
+    explanation:
+      'Two nested loops over `n` elements - each pass bubbles the largest unsorted value to the end. Comparisons sum to about n²/2, so **O(n²)** time. Swaps happen in place with no extra storage, **O(1)** space.',
+    concept: 'nested loops over the same array',
+    topic_tags: ['sorting', 'arrays'],
+    difficulty: 'easy',
+    variables: [{ name: 'n', meaning: 'length of the input array' }],
+  },
+  {
+    kind: 'code',
+    id: 'insertion-sort',
+    category: 'sorting',
+    code: {
+      python: `def insertion_sort(arr):
+    for i in range(1, len(arr)):
+        key = arr[i]
+        j = i - 1
+        while j >= 0 and arr[j] > key:
+            arr[j + 1] = arr[j]
+            j -= 1
+        arr[j + 1] = key
+    return arr`,
+      javascript: `function insertionSort(arr) {
+  for (let i = 1; i < arr.length; i++) {
+    const key = arr[i];
+    let j = i - 1;
+    while (j >= 0 && arr[j] > key) {
+      arr[j + 1] = arr[j];
+      j--;
+    }
+    arr[j + 1] = key;
+  }
+  return arr;
+}`,
+    },
+    time_complexity: 'O(n^2)',
+    space_complexity: 'O(1)',
+    accepted_equivalent_forms: {
+      time: ['O(n²)', 'O(n*n)', 'O(n·n)'],
+    },
+    explanation:
+      'Outer loop runs `n` times; inner loop shifts up to all prior elements. Worst case (reverse-sorted) hits **O(n²)** time - that is the answer to give unless the question explicitly asks for best case (which is O(n) on already-sorted input). Shifts happen in place, **O(1)** space.',
+    concept: 'shifting prior elements one slot at a time',
+    topic_tags: ['sorting', 'arrays'],
+    difficulty: 'easy',
+    variables: [{ name: 'n', meaning: 'length of the input array' }],
+  },
+  {
+    kind: 'code',
+    id: 'merge-sort',
+    category: 'sorting',
+    code: {
+      python: `def merge_sort(arr):
+    if len(arr) <= 1:
+        return arr
+    mid = len(arr) // 2
+    left = merge_sort(arr[:mid])
+    right = merge_sort(arr[mid:])
+    return merge(left, right)
+
+def merge(left, right):
+    out = []
+    i = j = 0
+    while i < len(left) and j < len(right):
+        if left[i] <= right[j]:
+            out.append(left[i])
+            i += 1
+        else:
+            out.append(right[j])
+            j += 1
+    out.extend(left[i:])
+    out.extend(right[j:])
+    return out`,
+      javascript: `function mergeSort(arr) {
+  if (arr.length <= 1) return arr;
+  const mid = Math.floor(arr.length / 2);
+  const left = mergeSort(arr.slice(0, mid));
+  const right = mergeSort(arr.slice(mid));
+  return merge(left, right);
+}
+
+function merge(left, right) {
+  const out = [];
+  let i = 0;
+  let j = 0;
+  while (i < left.length && j < right.length) {
+    if (left[i] <= right[j]) out.push(left[i++]);
+    else out.push(right[j++]);
+  }
+  while (i < left.length) out.push(left[i++]);
+  while (j < right.length) out.push(right[j++]);
+  return out;
+}`,
+    },
+    time_complexity: 'O(n log n)',
+    space_complexity: 'O(n)',
+    explanation:
+      'The recursion tree has **log n** levels, and each level does O(n) total work merging - **O(n log n)** time, regardless of input order. Each merge needs a buffer the size of the slice; the live slices across the recursion sum to O(n) - **O(n)** space. This is the classic divide-and-conquer trade: linearithmic time at the cost of linear extra memory.',
+    concept: 'divide-and-conquer with linear merge per level',
+    topic_tags: ['sorting', 'recursion', 'divide-and-conquer'],
+    difficulty: 'medium',
+    variables: [{ name: 'n', meaning: 'length of the input array' }],
+  },
+  {
+    kind: 'code',
+    id: 'heap-sort',
+    category: 'sorting',
+    code: {
+      python: `def heap_sort(arr):
+    n = len(arr)
+    # build a max-heap in place
+    for i in range(n // 2 - 1, -1, -1):
+        sift_down(arr, i, n)
+    # swap max to the end and re-heapify the prefix
+    for end in range(n - 1, 0, -1):
+        arr[0], arr[end] = arr[end], arr[0]
+        sift_down(arr, 0, end)
+    return arr
+
+def sift_down(arr, i, end):
+    while True:
+        j = 2 * i + 1
+        if j >= end:
+            return
+        if j + 1 < end and arr[j + 1] > arr[j]:
+            j += 1
+        if arr[i] >= arr[j]:
+            return
+        arr[i], arr[j] = arr[j], arr[i]
+        i = j`,
+      javascript: `function heapSort(arr) {
+  const n = arr.length;
+  for (let i = Math.floor(n / 2) - 1; i >= 0; i--) {
+    siftDown(arr, i, n);
+  }
+  for (let end = n - 1; end > 0; end--) {
+    [arr[0], arr[end]] = [arr[end], arr[0]];
+    siftDown(arr, 0, end);
+  }
+  return arr;
+}
+
+function siftDown(arr, i, end) {
+  while (true) {
+    let j = 2 * i + 1;
+    if (j >= end) return;
+    if (j + 1 < end && arr[j + 1] > arr[j]) j++;
+    if (arr[i] >= arr[j]) return;
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+    i = j;
+  }
+}`,
+    },
+    time_complexity: 'O(n log n)',
+    space_complexity: 'O(1)',
+    explanation:
+      'Building the heap is **O(n)** (sift-down work concentrates near the leaves where height is small). Then `n` extract-max operations each cost O(log n) - total **O(n log n)** time. The heap lives in the input array, so only a few index variables are needed for working state - **O(1)** space. Same time class as merge sort, but constant extra memory.',
+    concept: 'in-place heap with extract-max loop',
+    topic_tags: ['sorting', 'heap', 'in-place'],
+    difficulty: 'medium',
+    variables: [{ name: 'n', meaning: 'length of the input array' }],
   },
 
   // ===== Matrix (2) =====
@@ -1661,8 +1921,8 @@ class MedianFinder:
     code: {
       python: `def set_zeroes(matrix):
     m, n = len(matrix), len(matrix[0])
-    first_row_zero = any(matrix[0][c] == 0 for c in range(n))
-    first_col_zero = any(matrix[r][0] == 0 for r in range(m))
+    first_row_zero = 0 in matrix[0]
+    first_col_zero = any(row[0] == 0 for row in matrix)
     for r in range(1, m):
         for c in range(1, n):
             if matrix[r][c] == 0:
@@ -1680,9 +1940,8 @@ class MedianFinder:
             matrix[r][0] = 0`,
       javascript: `function setZeroes(matrix) {
   const m = matrix.length, n = matrix[0].length;
-  let firstRowZero = false, firstColZero = false;
-  for (let c = 0; c < n; c++) if (matrix[0][c] === 0) firstRowZero = true;
-  for (let r = 0; r < m; r++) if (matrix[r][0] === 0) firstColZero = true;
+  const firstRow0 = matrix[0].includes(0);
+  const firstCol0 = matrix.some((row) => row[0] === 0);
   for (let r = 1; r < m; r++) {
     for (let c = 1; c < n; c++) {
       if (matrix[r][c] === 0) {
@@ -1693,11 +1952,13 @@ class MedianFinder:
   }
   for (let r = 1; r < m; r++) {
     for (let c = 1; c < n; c++) {
-      if (matrix[r][0] === 0 || matrix[0][c] === 0) matrix[r][c] = 0;
+      if (matrix[r][0] === 0 || matrix[0][c] === 0) {
+        matrix[r][c] = 0;
+      }
     }
   }
-  if (firstRowZero) for (let c = 0; c < n; c++) matrix[0][c] = 0;
-  if (firstColZero) for (let r = 0; r < m; r++) matrix[r][0] = 0;
+  if (firstRow0) matrix[0].fill(0);
+  if (firstCol0) for (const row of matrix) row[0] = 0;
 }`,
     },
     time_complexity: 'O(m * n)',
@@ -1706,7 +1967,7 @@ class MedianFinder:
       time: ['O(m · n)', 'O(mn)'],
     },
     explanation:
-      'A constant number of passes over the grid — **O(m · n)** time. By using the first row and column as marker storage we avoid the O(m + n) auxiliary array, achieving **O(1)** auxiliary space.',
+      'A constant number of passes over the grid - **O(m · n)** time. By using the first row and column as marker storage we avoid the O(m + n) auxiliary array, achieving **O(1)** auxiliary space.',
     concept: 'in-place markers replace auxiliary array',
     topic_tags: ['matrix', 'multivariable'],
     difficulty: 'hard',
@@ -1747,18 +2008,24 @@ class MedianFinder:
   if (!matrix.length) return [];
   const m = matrix.length, n = matrix[0].length;
   const res = [];
-  let top = 0, bottom = m - 1, left = 0, right = n - 1;
+  const push = (r, c) => res.push(matrix[r][c]);
+  let top = 0, bottom = m - 1;
+  let left = 0, right = n - 1;
   while (top <= bottom && left <= right) {
-    for (let c = left; c <= right; c++) res.push(matrix[top][c]);
+    for (let c = left; c <= right; c++) push(top, c);
     top++;
-    for (let r = top; r <= bottom; r++) res.push(matrix[r][right]);
+    for (let r = top; r <= bottom; r++) push(r, right);
     right--;
     if (top <= bottom) {
-      for (let c = right; c >= left; c--) res.push(matrix[bottom][c]);
+      for (let c = right; c >= left; c--) {
+        push(bottom, c);
+      }
       bottom--;
     }
     if (left <= right) {
-      for (let r = bottom; r >= top; r--) res.push(matrix[r][left]);
+      for (let r = bottom; r >= top; r--) {
+        push(r, left);
+      }
       left++;
     }
   }
@@ -1772,7 +2039,7 @@ class MedianFinder:
       space: ['O(m · n)'],
     },
     explanation:
-      'Each cell is visited exactly once — **O(m · n)** time. Auxiliary space is **O(1)** if we exclude the output; counting the output makes it O(m · n).',
+      'Each cell is visited exactly once - **O(m · n)** time. Auxiliary space is **O(1)** if we exclude the output; counting the output makes it O(m · n).',
     concept: 'single pass over a grid',
     topic_tags: ['matrix', 'multivariable'],
     difficulty: 'medium',
@@ -1849,7 +2116,7 @@ class MedianFinder:
     time_complexity: 'O(n log n)',
     space_complexity: 'O(1)',
     explanation:
-      'Looks quadratic at first glance — two nested loops — but the inner loop multiplies `j` by 2 each step, so it runs **O(log n)** times, not `n`. Outer × inner = **O(n log n)**. Space is **O(1)**.',
+      'Looks quadratic at first glance - two nested loops - but the inner loop multiplies `j` by 2 each step, so it runs **O(log n)** times, not `n`. Outer × inner = **O(n log n)**. Space is **O(1)**.',
     concept: 'doubling makes the inner loop logarithmic',
     topic_tags: ['twist', 'nested-loops', 'logarithmic'],
     difficulty: 'hard',
@@ -1881,7 +2148,7 @@ class MedianFinder:
       time: ['O(n^2)'],
     },
     explanation:
-      'Looks linear — single while-loop, one element handled per iteration — but `arr.shift()` (and Python `arr.pop(0)`) is **O(n)** because every remaining element shifts left. `n` iterations × O(n) per shift = **O(n²)**. Output list takes **O(n)** space.',
+      'Looks linear - single while-loop, one element handled per iteration - but `arr.shift()` (and Python `arr.pop(0)`) is **O(n)** because every remaining element shifts left. `n` iterations × O(n) per shift = **O(n²)**. Output list takes **O(n)** space.',
     concept: 'hidden cost: array shift is O(n)',
     topic_tags: ['twist', 'hidden-cost'],
     difficulty: 'hard',
@@ -1911,7 +2178,7 @@ class MedianFinder:
       time: ['O(n^2)'],
     },
     explanation:
-      'Looks linear — one `+=` per word — but each concatenation copies the entire result so far because strings are immutable. Summing 1 + 2 + ... + n character copies is **O(n²)**. Final string holds `n` chars, **O(n)** space. The fix is `"".join(words)` / `words.join("")` which is O(n).',
+      'Looks linear - one `+=` per word - but each concatenation copies the entire result so far because strings are immutable. Summing 1 + 2 + ... + n character copies is **O(n²)**. Final string holds `n` chars, **O(n)** space. The fix is `"".join(words)` / `words.join("")` which is O(n).',
     concept: 'hidden cost: immutable string concatenation',
     topic_tags: ['twist', 'strings', 'hidden-cost'],
     difficulty: 'hard',
@@ -1931,12 +2198,15 @@ class MedianFinder:
         return memo[n]
     if n < 2:
         return n
-    memo[n] = fib_memo(n - 1, memo) + fib_memo(n - 2, memo)
+    left = fib_memo(n - 1, memo)
+    right = fib_memo(n - 2, memo)
+    memo[n] = left + right
     return memo[n]`,
       javascript: `function fibMemo(n, memo = new Map()) {
   if (memo.has(n)) return memo.get(n);
   if (n < 2) return n;
-  const result = fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
+  const result =
+    fibMemo(n - 1, memo) + fibMemo(n - 2, memo);
   memo.set(n, result);
   return result;
 }`,
@@ -1944,7 +2214,7 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'Looks like the classic exponential Fibonacci, but the memo turns it into **O(n)** time — each subproblem `fib(k)` is computed exactly once (without the memo, you\'d recompute `fib(k)` exponentially many times — **O(2ⁿ)**). Memo plus call stack add up to **O(n)** auxiliary. The structure of the recursion is identical to the naive form; the memo changes everything.',
+      'Looks like the classic exponential Fibonacci, but the memo turns it into **O(n)** time - each subproblem `fib(k)` is computed exactly once (without the memo, you\'d recompute `fib(k)` exponentially many times - **O(2ⁿ)**). Memo plus call stack add up to **O(n)** auxiliary. The structure of the recursion is identical to the naive form; the memo changes everything.',
     concept: 'top-down DP with memoization',
     topic_tags: ['twist', 'recursion', 'memoization', 'dp'],
     difficulty: 'hard',
@@ -1967,7 +2237,7 @@ class MedianFinder:
     time_complexity: 'O(2^n)',
     space_complexity: 'O(n)',
     explanation:
-      'Two recursive calls per invocation with no memo grows the call tree to roughly 2ⁿ nodes — **O(2ⁿ)** time (more tightly Θ(φⁿ)). Despite the exponential call count, the recursion stack only goes `n` deep at any one time — **O(n)** space.',
+      'Two recursive calls per invocation with no memo grows the call tree to roughly 2ⁿ nodes - **O(2ⁿ)** time (more tightly Θ(φⁿ)). Despite the exponential call count, the recursion stack only goes `n` deep at any one time - **O(n)** space.',
     concept: 'branching recursion → exponential',
     topic_tags: ['twist', 'recursion', 'exponential'],
     difficulty: 'medium',
@@ -1998,7 +2268,7 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(n)',
     explanation:
-      'Each push is **O(1) amortized** — most are constant-time, but occasional resizes copy everything. Across `n` pushes the total copy work is bounded by 2n (geometric), so the function as a whole is **O(n)** time. The final array holds `n` elements, **O(n)** space. Worst-case-per-push is O(n), but amortized analysis is what matters here.',
+      'Each push is **O(1) amortized** - most are constant-time, but occasional resizes copy everything. Across `n` pushes the total copy work is bounded by 2n (geometric), so the function as a whole is **O(n)** time. The final array holds `n` elements, **O(n)** space. Worst-case-per-push is O(n), but amortized analysis is what matters here.',
     concept: 'amortized analysis',
     topic_tags: ['amortized', 'pedagogical'],
     difficulty: 'hard',
@@ -2027,7 +2297,7 @@ class MedianFinder:
     time_complexity: 'O(n)',
     space_complexity: 'O(1)',
     explanation:
-      'The early return makes some inputs return in O(1) — but big-O describes the **worst case**: target absent and larger than every element. Worst case is **O(n)**. The best case is O(1), the average depends on distribution. Big-O conventions ignore best/average unless stated.',
+      'The early return makes some inputs return in O(1) - but big-O describes the **worst case**: target absent and larger than every element. Worst case is **O(n)**. The best case is O(1), the average depends on distribution. Big-O conventions ignore best/average unless stated.',
     concept: 'worst case vs best case',
     topic_tags: ['pedagogical', 'best-vs-worst'],
     difficulty: 'medium',
@@ -2065,7 +2335,7 @@ function traverse(root) {
     time_complexity: 'O(n)',
     space_complexity: 'O(log n)',
     explanation:
-      'Every node is visited once — **O(n)** time. The recursion stack grows with tree depth: for a **balanced** BST the depth is `log n`, so auxiliary space is **O(log n)**. For a degenerate (chain) tree it would be O(n) — the balanced assumption is the whole lesson here.',
+      'Every node is visited once - **O(n)** time. The recursion stack grows with tree depth: for a **balanced** BST the depth is `log n`, so auxiliary space is **O(log n)**. For a degenerate (chain) tree it would be O(n) - the balanced assumption is the whole lesson here.',
     concept: 'balanced ⇒ logarithmic stack depth',
     topic_tags: ['pedagogical', 'trees', 'recursion'],
     difficulty: 'hard',
@@ -2081,7 +2351,7 @@ function traverse(root) {
       'What is the time complexity of pushing a value onto a binary heap?',
     time_complexity: 'O(log n)',
     explanation:
-      'A binary heap is a complete binary tree of height **log n**. Push appends the new value at the bottom and bubbles it up by repeated parent comparisons — at most one swap per level, so **O(log n)** comparisons and swaps.',
+      'A binary heap is a complete binary tree of height **log n**. Push appends the new value at the bottom and bubbles it up by repeated parent comparisons - at most one swap per level, so **O(log n)** comparisons and swaps.',
     concept: 'tree-height bound on heap operations',
     topic_tags: ['data-structures', 'heap'],
     difficulty: 'easy',
@@ -2094,7 +2364,7 @@ function traverse(root) {
       'What is the time complexity of peeking at the top (max or min) of a binary heap?',
     time_complexity: 'O(1)',
     explanation:
-      'The top element is always at the root, which is index 0 of the underlying array. No traversal, no swaps — a constant-time array read, **O(1)**.',
+      'The top element is always at the root, which is index 0 of the underlying array. No traversal, no swaps - a constant-time array read, **O(1)**.',
     concept: 'constant-time access at the heap root',
     topic_tags: ['data-structures', 'heap'],
     difficulty: 'easy',
@@ -2107,7 +2377,7 @@ function traverse(root) {
       'What is the average-case time complexity of looking up a key in a hashmap?',
     time_complexity: 'O(1)',
     explanation:
-      'On average, the hash function distributes keys across buckets so each bucket holds a constant number of entries. Lookup hashes the key and walks the bucket — **O(1)** expected. (Worst case is O(n) when every key collides into one bucket — see the related problem.)',
+      'On average, the hash function distributes keys across buckets so each bucket holds a constant number of entries. Lookup hashes the key and walks the bucket - **O(1)** expected. (Worst case is O(n) when every key collides into one bucket - see the related problem.)',
     concept: 'expected O(1) for distributed keys',
     topic_tags: ['data-structures', 'hashmap'],
     difficulty: 'easy',
@@ -2120,7 +2390,7 @@ function traverse(root) {
       'What is the worst-case time complexity of looking up a key in a hashmap?',
     time_complexity: 'O(n)',
     explanation:
-      'In the pathological case where every key hashes to the same bucket, the bucket becomes a linear list of `n` entries and lookup walks all of them — **O(n)**. Average case is O(1) (see the related problem); production hashmaps use techniques like tree-bucketed chaining (Java HashMap) or robin-hood probing to keep this from biting in practice, but the asymptotic worst case stands.',
+      'In the pathological case where every key hashes to the same bucket, the bucket becomes a linear list of `n` entries and lookup walks all of them - **O(n)**. Average case is O(1) (see the related problem); production hashmaps use techniques like tree-bucketed chaining (Java HashMap) or robin-hood probing to keep this from biting in practice, but the asymptotic worst case stands.',
     concept: 'hashmap collision worst case',
     topic_tags: ['data-structures', 'hashmap'],
     difficulty: 'medium',
@@ -2133,7 +2403,7 @@ function traverse(root) {
       'What is the time complexity of inserting a node at the head of a singly linked list?',
     time_complexity: 'O(1)',
     explanation:
-      'Allocate the new node, point its `next` at the current head, then update the head pointer to the new node. No traversal, **O(1)**. The contrast with arrays — where head insertion is O(n) due to shifting — is one of the main reasons linked lists exist.',
+      'Allocate the new node, point its `next` at the current head, then update the head pointer to the new node. No traversal, **O(1)**. The contrast with arrays - where head insertion is O(n) due to shifting - is one of the main reasons linked lists exist.',
     concept: 'constant-time pointer manipulation',
     topic_tags: ['data-structures', 'linked-list'],
     difficulty: 'medium',
@@ -2149,7 +2419,7 @@ function traverse(root) {
       time: ['O(1) amortized'],
     },
     explanation:
-      'Most appends are constant-time writes to an internal buffer. Occasionally the buffer fills and the array doubles, copying all existing elements — that single append is O(n). But because the buffer doubles, those expensive appends are rare enough that the **amortized** cost across `n` appends is bounded by 2n total writes — **O(1) amortized per append**. The worst-case-per-append is O(n); make sure the question is asking for amortized when you give this answer.',
+      'Most appends are constant-time writes to an internal buffer. Occasionally the buffer fills and the array doubles, copying all existing elements - that single append is O(n). But because the buffer doubles, those expensive appends are rare enough that the **amortized** cost across `n` appends is bounded by 2n total writes - **O(1) amortized per append**. The worst-case-per-append is O(n); make sure the question is asking for amortized when you give this answer.',
     concept: 'amortized analysis',
     topic_tags: ['data-structures', 'amortized', 'dynamic-array'],
     difficulty: 'hard',

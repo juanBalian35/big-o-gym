@@ -1,4 +1,4 @@
-# Complexity Practice Tool — MVP Spec
+# Complexity Practice Tool - MVP Spec
 
 > v1.0. Author: Juan + Claude. All open questions resolved. This is the spec we build from.
 
@@ -8,7 +8,7 @@ A web tool where engineers practice identifying the time and space complexity of
 
 ## Who it's for
 
-Engineers actively preparing for technical interviews — early-career to mid-level, comfortable reading code in mainstream languages. Not students learning algorithms for the first time, not senior engineers reviewing fundamentals. The voice and difficulty calibration target someone who has done some LeetCode and wants to sharpen the analysis side.
+Engineers actively preparing for technical interviews - early-career to mid-level, comfortable reading code in mainstream languages. Not students learning algorithms for the first time, not senior engineers reviewing fundamentals. The voice and difficulty calibration target someone who has done some LeetCode and wants to sharpen the analysis side.
 
 ## The core loop
 
@@ -37,7 +37,7 @@ These are real features for later versions, not forever-no's. Listing them so th
 - Hints, multi-guess feedback, progressive reveals
 - Difficulty levels exposed to user
 - Θ vs O distinction (deferred to a future "analysis beyond interviews" track)
-- Practical runtime follow-ups ("what's the biggest N that finishes in 1s?") — strong v2 feature
+- Practical runtime follow-ups ("what's the biggest N that finishes in 1s?") - strong v2 feature
 
 ## Domain model
 
@@ -45,15 +45,15 @@ Two entities.
 
 **Problem**
 - `id`: string, stable identifier
-- `code`: object `{ python: string, javascript: string }` — both languages required for every problem
+- `code`: object `{ python: string, javascript: string }` - both languages required for every problem
 - `time_complexity`: canonical string, e.g. `O(n log n)`
 - `space_complexity`: canonical string, e.g. `O(n)`
 - `accepted_equivalent_forms`: optional object with `time` and `space` arrays of additional canonical strings that should count as fully correct (used for semantic equivalences the normalizer can't infer, e.g. `O(n + m)` vs `O(max(n, m))`). Empty/omitted for most problems.
-- `explanation`: markdown string, 2-4 sentences explaining why the complexities are what they are. Single explanation per problem — the complexity reasoning is language-agnostic.
-- `topic_tags`: string array, e.g. `["recursion", "binary-search"]` — used internally for content authoring, not shown to user in MVP
-- `difficulty`: enum `easy | medium | hard` — used internally, not shown
+- `explanation`: markdown string, 2-4 sentences explaining why the complexities are what they are. Single explanation per problem - the complexity reasoning is language-agnostic.
+- `topic_tags`: string array, e.g. `["recursion", "binary-search"]` - used internally for content authoring, not shown to user in MVP
+- `difficulty`: enum `easy | medium | hard` - used internally, not shown
 
-Authoring discipline: the Python and JavaScript versions of a problem must have the *same* complexity. Watch for language-specific gotchas (e.g., `arr.shift()` is O(n) in JS, `deque.popleft()` is O(1) in Python — these are different complexities, not parallel implementations).
+Authoring discipline: the Python and JavaScript versions of a problem must have the *same* complexity. Watch for language-specific gotchas (e.g., `arr.shift()` is O(n) in JS, `deque.popleft()` is O(1) in Python - these are different complexities, not parallel implementations).
 
 **Attempt** (stored in localStorage)
 - `problem_id`: string
@@ -64,7 +64,7 @@ Authoring discipline: the Python and JavaScript versions of a problem must have 
 - `space_result`: enum `correct | almost | wrong`
 - `timestamp`: ISO date string
 
-No sessions, no scores, no derived state in storage — derive everything from the attempt log on the fly when needed.
+No sessions, no scores, no derived state in storage - derive everything from the attempt log on the fly when needed.
 
 **User preferences** (stored in localStorage, separate key)
 - `preferred_language`: enum `python | javascript`. Defaults to `python` on first visit. User can toggle from the UI.
@@ -76,8 +76,8 @@ No sessions, no scores, no derived state in storage — derive everything from t
 Both fields (time and space) are text inputs. The user types their answer in any reasonable notation. A normalizer parses the input, simplifies it, and compares against the canonical answer.
 
 Three response states:
-- ✅ **Correct.** User's answer matches the canonical answer (after syntactic normalization that doesn't involve dropping terms — e.g., `O(n*n)` → `O(n²)` is still correct).
-- ⚠️ **Almost.** User's answer simplifies to the canonical answer, but the simplification involved dropping a constant or a dominated term. E.g., user wrote `O(2n)`, answer is `O(n)`. Feedback message: "Almost — drop the constant: O(2n) simplifies to O(n)."
+- ✅ **Correct.** User's answer matches the canonical answer (after syntactic normalization that doesn't involve dropping terms - e.g., `O(n*n)` → `O(n²)` is still correct).
+- ⚠️ **Almost.** User's answer simplifies to the canonical answer, but the simplification involved dropping a constant or a dominated term. E.g., user wrote `O(2n)`, answer is `O(n)`. Feedback message: "Almost - drop the constant: O(2n) simplifies to O(n)."
 - ❌ **Wrong.** User's answer doesn't match even after simplification. Show the canonical answer and the explanation.
 
 This input format aligns with the educational-first goal: it tests recall (the skill interviews actually probe) rather than recognition from a list. It also unlocks multivariable problems (graph algorithms, matrix problems, edit-distance-style problems), which represent a substantial fraction of legitimate interview content.
@@ -94,7 +94,7 @@ A complexity expression is composed of:
 - Constants: positive integers (`1`, `2`, `100`)
 - Variables: single lowercase letters (`n`, `m`, `k`, `v`, `e`)
 - Operators: `+`, `*`, `·`, `^`, juxtaposition (e.g. `n log n` means `n * log(n)`)
-- Functions: `log` (with optional base subscript, treated as base-2 for normalization purposes — the base doesn't affect big-O), `log₂`, `log_2`, `lg`, `ln`
+- Functions: `log` (with optional base subscript, treated as base-2 for normalization purposes - the base doesn't affect big-O), `log₂`, `log_2`, `lg`, `ln`
 - Exponent shortcuts: `²`, `³`, `^2`, `^3`, etc.
 - Optional outer wrapping: `O(...)`, `o(...)`. Stripped if present.
 
@@ -117,18 +117,18 @@ After normalization, the input becomes a canonical AST. Compare against the prob
 - If they match AND at least one of {drop constants, drop dominated terms} was applied → **almost**. Show what was simplified.
 - If they don't match → **wrong**. Also check `accepted_equivalent_forms`; if user's normalized input matches any of those, treat as correct.
 
-Rules 3, 4, 5 (log bases, multiplication, exponent notation) are syntactic rewrites, not simplifications. They don't trigger "almost" — applying them and matching is fully correct.
+Rules 3, 4, 5 (log bases, multiplication, exponent notation) are syntactic rewrites, not simplifications. They don't trigger "almost" - applying them and matching is fully correct.
 
 ### What the normalizer does NOT handle
 
 - Semantic equivalences like `O(n + m)` vs `O(max(n, m))`. These are handled per-problem via `accepted_equivalent_forms`.
 - `Θ` vs `O` distinction. Treat `Θ(...)` and `O(...)` identically for MVP. (Future: separate track.)
 - Amortized vs worst-case annotations like "O(1) amortized." Strip the annotation; treat as `O(1)`. Note in explanation if the distinction matters for the problem.
-- Expressions outside the grammar (e.g., `O(n!)` is in scope; `O(n^n)` is in scope; `O(α(n))` for inverse Ackermann is out of scope — no v1 problem needs it).
+- Expressions outside the grammar (e.g., `O(n!)` is in scope; `O(n^n)` is in scope; `O(α(n))` for inverse Ackermann is out of scope - no v1 problem needs it).
 
 ### Failure modes
 
-If the normalizer can't parse the input (e.g., user typed "linear" or "fast"), surface a friendly error: "Couldn't parse that. Try notation like O(n) or O(n log n)." Don't count it as a wrong answer — let them retype. This is the only re-try path in the MVP.
+If the normalizer can't parse the input (e.g., user typed "linear" or "fast"), surface a friendly error: "Couldn't parse that. Try notation like O(n) or O(n log n)." Don't count it as a wrong answer - let them retype. This is the only re-try path in the MVP.
 
 ## The page (the entire UI)
 
@@ -148,7 +148,7 @@ That's the entire UI. No tabs, no modals, no settings, no profile, no stats foot
 ## Behavior details
 
 - **Problem selection.** Random from the pool, with the constraint that the user shouldn't see the same problem twice in a row. After the user has attempted every problem in the pool at least once, behavior is: keep serving random ones, no special "you've completed everything" state in MVP.
-- **Submission is final per problem.** No "try again" within a problem (except for normalizer parse failures — see above). Wrong is wrong; user reads the explanation and moves on. They can re-encounter the problem later via the random selection.
+- **Submission is final per problem.** No "try again" within a problem (except for normalizer parse failures - see above). Wrong is wrong; user reads the explanation and moves on. They can re-encounter the problem later via the random selection.
 - **No timer.** MVP has no timer.
 - **Language toggle mid-problem.** If the user toggles language while a problem is displayed, the snippet updates immediately to the other language version. Doesn't reset their typed answer.
 
@@ -171,23 +171,23 @@ Distribution should overrepresent the common interview complexities (O(n), O(n l
 
 The MVP authoring workflow must support scaling to 100+ problems comfortably:
 - Adding a new problem = single PR adding one entry to the problems file
-- Schema validation runs at build time — invalid problems fail the build
+- Schema validation runs at build time - invalid problems fail the build
 - Optional CLI helper to scaffold a new problem entry (nice-to-have, not blocking)
 
 ## Technical choices
 
-- **Framework:** Vite + React + TypeScript. Pure SPA — no backend, no SSR. Deploy as static files.
+- **Framework:** Vite + React + TypeScript. Pure SPA - no backend, no SSR. Deploy as static files.
 - **Styling:** Tailwind. No component library; the UI is small enough to build by hand and keeps bundle size minimal.
 - **Syntax highlighting:** Shiki, pre-rendered at build time via a build script that processes `problems.ts` into highlighted HTML. Avoids shipping the Shiki runtime to the browser. Must support both Python and JavaScript.
 - **State:** React state for current-problem flow, localStorage for persistence and language preference. No global state library, no server, no database.
-- **Normalizer:** Custom, written in TypeScript. Hand-rolled recursive-descent parser → AST → simplifier → canonical-form comparison. ~300-500 lines including tests. Tests are not optional for this module — it's the core IP.
+- **Normalizer:** Custom, written in TypeScript. Hand-rolled recursive-descent parser → AST → simplifier → canonical-form comparison. ~300-500 lines including tests. Tests are not optional for this module - it's the core IP.
 - **Content:** Single `problems.ts` (TypeScript for type safety on the schema) checked into the repo. Adding a new problem = a PR.
-- **Deployment:** Cloudflare Pages or Vercel — both work for static Vite output. Pick whichever is more familiar.
+- **Deployment:** Cloudflare Pages or Vercel - both work for static Vite output. Pick whichever is more familiar.
 - **Analytics:** Plausible or similar privacy-respecting analytics, just for "are people coming back" signal. No per-user tracking.
 
 ## Visual design
 
-Clean, monospace-heavy, low-chrome. Vaguely terminal/IDE aesthetic — fits the audience and is fast to build. Single dark theme. Accent color for ✅ (green), ⚠️ (amber), ❌ (red). The code panel and answer panel should feel like the focus; everything else recedes.
+Clean, monospace-heavy, low-chrome. Vaguely terminal/IDE aesthetic - fits the audience and is fast to build. Single dark theme. Accent color for ✅ (green), ⚠️ (amber), ❌ (red). The code panel and answer panel should feel like the focus; everything else recedes.
 
 No animations, no transitions beyond what's necessary for readability. The product feels serious and respectful of the user's time.
 
@@ -199,4 +199,4 @@ The MVP is "successful" if, after sharing it with ~50-100 engineers (Reddit, Hac
 - A noticeable fraction returning within a week (signals it's worth coming back)
 - Qualitative feedback that the explanations are useful and the difficulty feels right
 
-If those signals are weak, the answer isn't to add features — it's to revisit whether the core loop is right at all. If they're strong, the next features to consider are: more problems (50 → 100+), skill tags exposed to user, lightweight progress visualization, the practical-runtime follow-up question, and (only then) the daily-problem / social hooks.
+If those signals are weak, the answer isn't to add features - it's to revisit whether the core loop is right at all. If they're strong, the next features to consider are: more problems (50 → 100+), skill tags exposed to user, lightweight progress visualization, the practical-runtime follow-up question, and (only then) the daily-problem / social hooks.

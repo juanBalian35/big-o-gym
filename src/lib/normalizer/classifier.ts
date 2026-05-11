@@ -12,12 +12,12 @@ export type ClassificationResult = {
 /**
  * Classify a user's complexity answer against a canonical answer.
  *
- * - `correct` — user's normalized form matches canonical without applying
+ * - `correct` - user's normalized form matches canonical without applying
  *   any "lossy" simplification (drop constant / drop dominated term).
- * - `almost` — matches after applying at least one lossy simplification.
- * - `wrong`  — doesn't match even after simplification, and doesn't match
+ * - `almost` - matches after applying at least one lossy simplification.
+ * - `wrong`  - doesn't match even after simplification, and doesn't match
  *   any of the optional `acceptedEquivalents`.
- * - `parse_error` — user input couldn't be parsed.
+ * - `parse_error` - user input couldn't be parsed.
  */
 export function classifyAnswer(
   userInput: string,
@@ -45,7 +45,7 @@ export function classifyAnswer(
   try {
     canonicalForms.push(normalize(canonicalAnswer, makeTracker()));
   } catch {
-    // canonical itself is unparseable — fall through; only equivalents may match
+    // canonical itself is unparseable - fall through; only equivalents may match
   }
   if (acceptedEquivalents) {
     for (const eq of acceptedEquivalents) {
@@ -76,10 +76,10 @@ function normalize(input: string, t: Tracker): string {
 
 function buildAlmostMessage(t: Tracker): string {
   if (t.droppedConstant && t.droppedDominated) {
-    return 'Almost — drop the constant and the dominated term.';
+    return 'Almost - drop the constant and the dominated term.';
   }
   if (t.droppedConstant) {
-    return 'Almost — drop the constant coefficient.';
+    return 'Almost - drop the constant coefficient.';
   }
-  return 'Almost — drop the dominated lower-order term.';
+  return 'Almost - drop the dominated lower-order term.';
 }

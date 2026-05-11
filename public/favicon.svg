@@ -1,14 +1,22 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <style>
+    .weight { fill: #1f883d; }
+    .bar    { fill: #1f2328; }
+    @media (prefers-color-scheme: dark) {
+      .weight { fill: #7ee787; }
+      .bar    { fill: #e6edf3; }
+    }
+  </style>
   <!-- left O weight -->
-  <rect x="2" y="8" width="8" height="2" fill="#7ee787"/>
-  <rect x="2" y="22" width="8" height="2" fill="#7ee787"/>
-  <rect x="2" y="10" width="2" height="12" fill="#7ee787"/>
-  <rect x="8" y="10" width="2" height="12" fill="#7ee787"/>
+  <rect class="weight" x="2"  y="8"  width="8"  height="2"/>
+  <rect class="weight" x="2"  y="22" width="8"  height="2"/>
+  <rect class="weight" x="2"  y="10" width="2"  height="12"/>
+  <rect class="weight" x="8"  y="10" width="2"  height="12"/>
   <!-- bar -->
-  <rect x="10" y="14" width="12" height="4" fill="#e6edf3"/>
+  <rect class="bar"    x="10" y="14" width="12" height="4"/>
   <!-- right O weight -->
-  <rect x="22" y="8" width="8" height="2" fill="#7ee787"/>
-  <rect x="22" y="22" width="8" height="2" fill="#7ee787"/>
-  <rect x="22" y="10" width="2" height="12" fill="#7ee787"/>
-  <rect x="28" y="10" width="2" height="12" fill="#7ee787"/>
+  <rect class="weight" x="22" y="8"  width="8"  height="2"/>
+  <rect class="weight" x="22" y="22" width="8"  height="2"/>
+  <rect class="weight" x="22" y="10" width="2"  height="12"/>
+  <rect class="weight" x="28" y="10" width="2"  height="12"/>
 </svg>

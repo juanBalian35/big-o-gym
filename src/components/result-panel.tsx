@@ -25,6 +25,9 @@ interface Props {
   onRetry?: () => void;
   variables?: ProblemVariable[];
   nextProblemName?: string | null;
+  nextLabel?: string;
+  shareLabel?: string;
+  solutionShown?: boolean;
 }
 
 export function ResultPanel({
@@ -38,6 +41,9 @@ export function ResultPanel({
   onRetry,
   variables,
   nextProblemName,
+  nextLabel = 'Next problem →',
+  shareLabel = 'Copy problem link',
+  solutionShown,
 }: Props) {
   const nextRef = useRef<HTMLButtonElement>(null);
   useEffect(() => {
@@ -56,9 +62,13 @@ export function ResultPanel({
       <div
         className={`space-y-5 p-4 ${hasVariables ? 'border-t border-border' : ''}`}
       >
-        {lines.map((line) => (
-          <ResultRow key={line.label} line={line} />
-        ))}
+        {lines.map((line) =>
+          solutionShown ? (
+            <SolutionRow key={line.label} line={line} />
+          ) : (
+            <ResultRow key={line.label} line={line} />
+          )
+        )}
 
       <ExplanationBlock
         concept={concept}
@@ -74,7 +84,7 @@ export function ResultPanel({
             title="Copy a link to this exact problem"
             className="rounded border border-border px-3 py-1.5 text-xs text-muted transition-colors hover:border-text hover:text-text"
           >
-            {shareCopied ? 'Link copied!' : 'Copy problem link'}
+            {shareCopied ? 'Link copied!' : shareLabel}
           </button>
           <div className="flex items-center gap-3">
             {onRetry && (
@@ -92,7 +102,7 @@ export function ResultPanel({
               onClick={onNext}
               className="rounded border border-accent px-4 py-1.5 text-sm text-accent hover:bg-accent/10 focus:outline-none focus:ring-2 focus:ring-accent/40"
             >
-              Next problem →
+              {nextLabel}
             </button>
           </div>
         </div>
@@ -139,7 +149,7 @@ function ResultRow({ line }: { line: ResultLine }) {
       ? line.state === 'parse_error'
         ? line.userAnswer
         : `O(${line.userAnswer})`
-      : '—';
+      : '-';
   const correctDisplay = line.canonicalAnswer;
 
   return (
@@ -165,6 +175,19 @@ function ResultRow({ line }: { line: ResultLine }) {
       {line.message && (
         <div className="text-sm text-muted italic">{line.message}</div>
       )}
+    </div>
+  );
+}
+
+function SolutionRow({ line }: { line: ResultLine }) {
+  return (
+    <div className="flex items-baseline justify-between gap-3 border-b border-border/50 pb-2 last:border-0 last:pb-0">
+      <span className="text-[11px] uppercase tracking-wider text-muted">
+        {line.label}
+      </span>
+      <code className="font-mono text-sm text-text">
+        {line.canonicalAnswer}
+      </code>
     </div>
   );
 }

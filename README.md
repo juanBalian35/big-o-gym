@@ -1,6 +1,6 @@
 # Big O Gym
 
-[bigogym.io](https://bigogym.io) — a web tool for practicing time/space complexity analysis on code snippets. Built for engineers prepping technical interviews.
+[bigogym.io](https://bigogym.io) - a web tool for practicing time/space complexity analysis on code snippets. Built for engineers prepping technical interviews.
 
 See `SPEC.md` for the product spec and `TICKETS.md` for the implementation plan.
 
@@ -20,4 +20,4 @@ See `CLAUDE.md` for project conventions and `DECISIONS.md` for non-obvious choic
 
 ## Deployment
 
-Static output in `dist/` — deploy to Cloudflare Pages, Vercel, Netlify, or any static host. The build command is `npm run build`; the output directory is `dist`.
+Static output in `dist/` - deploy to Cloudflare Pages, Vercel, Netlify, or any static host. The build command is `npm run build`; the output directory is `dist`.

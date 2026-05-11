@@ -10,6 +10,7 @@ export interface AnswerField {
 interface Props {
   fields: AnswerField[];
   onSubmit: (answers: Record<string, string>) => void;
+  onShowSolution?: () => void;
   disabled?: boolean;
   parseError?: string | null;
   variables?: ProblemVariable[];
@@ -18,6 +19,7 @@ interface Props {
 export function AnswerPanel({
   fields,
   onSubmit,
+  onShowSolution,
   disabled,
   parseError,
   variables,
@@ -92,14 +94,26 @@ export function AnswerPanel({
             <code className="text-text">n + m</code>,{' '}
             <code className="text-text">n²</code>
           </p>
-          <button
-            type="button"
-            onClick={handleSubmit}
-            disabled={!canSubmit}
-            className="rounded border border-accent bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-muted"
-          >
-            Submit
-          </button>
+          <div className="flex items-center gap-4">
+            {onShowSolution && (
+              <button
+                type="button"
+                onClick={onShowSolution}
+                disabled={disabled}
+                className="text-[11px] text-muted underline-offset-2 hover:text-text hover:underline disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                show solution
+              </button>
+            )}
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={!canSubmit}
+              className="rounded border border-accent bg-accent/10 px-4 py-1.5 text-sm font-medium text-accent transition-colors hover:bg-accent/20 disabled:cursor-not-allowed disabled:border-border disabled:bg-transparent disabled:text-muted"
+            >
+              Submit
+            </button>
+          </div>
         </div>
       </div>
     </section>

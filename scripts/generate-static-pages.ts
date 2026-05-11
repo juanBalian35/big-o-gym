@@ -32,7 +32,7 @@ function staticBodyForProblem(p: Problem): string {
     const variables = p.variables
       .map(
         (v) =>
-          `<li><code>${escapeHtml(v.name)}</code> — ${escapeHtml(v.meaning)}</li>`
+          `<li><code>${escapeHtml(v.name)}</code> - ${escapeHtml(v.meaning)}</li>`
       )
       .join('');
     return `
@@ -63,16 +63,44 @@ function staticBodyForProblem(p: Problem): string {
     </main>`;
 }
 
+function staticBodyForDaily(): string {
+  // Generic copy because the actual problem changes each UTC day - the
+  // static page is built once and served until the next build. Crawlers see
+  // this body when fetching /daily; the live React app overrides it on mount.
+  return `
+    <header>
+      <h1>Big O Daily - Today's Big O Practice Problem</h1>
+      <p>One handpicked complexity problem every day. Read the code, type the time and space complexity, build a streak.</p>
+    </header>
+    <main>
+      <h2>How the daily works</h2>
+      <p>
+        Every day at UTC midnight, Big O Gym rotates to a new code snippet
+        from the catalog of 60 curated interview problems. Read it, type
+        the time and space complexity in big-O notation, and get instant
+        feedback on whether you got it right - including the concept being
+        tested and why.
+      </p>
+      <h3>Why daily?</h3>
+      <ul>
+        <li>Five minutes a day beats an hour a week for retaining the analysis patterns interviewers test.</li>
+        <li>Solving consecutive days builds a visible streak that protects itself.</li>
+        <li>Every UTC day is a fresh, deterministic problem - no two consecutive days repeat.</li>
+      </ul>
+      <p>Free. No signup. Bookmark this page and check back daily.</p>
+    </main>`;
+}
+
 function staticBodyForHome(): string {
   return `
     <header>
-      <h1>Big O Gym</h1>
+      <h1>Big O Practice for Interviews</h1>
       <p>Read the code, type the complexity, learn what trips you up.</p>
     </header>
     <main>
-      <h2>Free interview prep for time and space complexity analysis</h2>
+      <h2>Free Big O practice for time and space complexity analysis</h2>
       <p>
-        Big O Gym is a free practice tool for engineers preparing for
+        Big O Gym is a free Big O practice tool for engineers preparing for
         technical interviews. Read a code snippet in Python or JavaScript,
         type your guess for the time and space complexity, and get instant
         feedback on whether you got it right, almost right (you forgot to
@@ -80,13 +108,13 @@ function staticBodyForHome(): string {
       </p>
       <h3>What you'll practice</h3>
       <ul>
-        <li>Recognizing common complexity classes — O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ).</li>
-        <li>Multivariable analysis — graph traversals (V + E), matrix problems (m · n), edit-distance (n · m).</li>
-        <li>"Looks like A but is B" twists — hidden array shifts, immutable string concatenation, doubling inner loops.</li>
-        <li>Amortized analysis — dynamic array push, LRU cache, hashmap operations.</li>
-        <li>Per-method complexity for class-shaped problems — LRU, Trie, MedianFinder.</li>
+        <li>Recognizing common complexity classes - O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ).</li>
+        <li>Multivariable analysis - graph traversals (V + E), matrix problems (m · n), edit-distance (n · m).</li>
+        <li>"Looks like A but is B" twists - hidden array shifts, immutable string concatenation, doubling inner loops.</li>
+        <li>Amortized analysis - dynamic array push, LRU cache, hashmap operations.</li>
+        <li>Per-method complexity for class-shaped problems - LRU, Trie, MedianFinder.</li>
       </ul>
-      <p>56 problems. Free. No signup.</p>
+      <p>60 problems for daily Big O practice. Free. No signup.</p>
     </main>`;
 }
 
@@ -138,7 +166,7 @@ function jsonLdForProblem(p: Problem, url: string): string {
     '@type': 'LearningResource',
     name: isCode ? readableName(p.id) : 'Big O complexity quiz',
     description: isCode
-      ? `Practice the time and space complexity of ${readableName(p.id)} — concept tested: ${p.concept}.`
+      ? `Practice the time and space complexity of ${readableName(p.id)} - concept tested: ${p.concept}.`
       : p.prompt,
     url,
     educationalUse: 'practice',
@@ -172,24 +200,36 @@ function replaceMeta(
 export async function generateStaticPages(problems: Problem[]): Promise<void> {
   const baseHtml = await readFile(join(distDir, 'index.html'), 'utf8');
 
-  // Home page — enrich with static SEO body.
+  // Home page - enrich with static SEO body.
   const homeHtml = applyMeta(baseHtml, {
-    title: 'Big O Gym — practice time and space complexity for interviews',
+    title: 'Big O Practice for Interviews | Big O Gym',
     description:
-      'Free tool for practicing time and space complexity analysis on code snippets in Python and JavaScript. Designed for technical interview prep — type the answer, get instant feedback.',
+      'Big O practice for technical interviews. Read Python or JavaScript code, type the time and space complexity, get instant feedback.',
     url: `${SITE_ORIGIN}/`,
     body: staticBodyForHome(),
   });
   await writeFile(join(distDir, 'index.html'), homeHtml, 'utf8');
 
+  // /daily - own static page so crawlers indexing /daily don't get the
+  // home body. Copy is generic because the actual problem changes daily.
+  const dailyHtml = applyMeta(baseHtml, {
+    title: "Big O Daily - Today's Big O Practice Problem | Big O Gym",
+    description:
+      'A new Big O complexity problem every day. Read the code, type the time and space complexity, build a daily streak. Free, no signup.',
+    url: `${SITE_ORIGIN}/daily`,
+    body: staticBodyForDaily(),
+  });
+  await mkdir(join(distDir, 'daily'), { recursive: true });
+  await writeFile(join(distDir, 'daily', 'index.html'), dailyHtml, 'utf8');
+
   // Per-problem pages.
   for (const p of problems) {
     const name = readableName(p.id);
     const isCode = p.kind === 'code';
-    const title = `${isCode ? name : 'Quiz'} — Big O Gym`;
+    const title = `Big O Practice: ${isCode ? name : 'Quiz'} | Big O Gym`;
     const description = isCode
-      ? `Practice the time and space complexity of ${name} in Python and JavaScript. Concept tested: ${p.concept}.`
-      : `${p.prompt} Practice this and 55 other complexity problems on Big O Gym.`;
+      ? `Big O practice for ${name} in Python and JavaScript. Concept tested: ${p.concept}.`
+      : `${p.prompt} Big O practice and 59 other complexity problems on Big O Gym.`;
 
     const url = `${SITE_ORIGIN}/p/${p.id}`;
     const html = applyMeta(baseHtml, {
@@ -205,10 +245,13 @@ export async function generateStaticPages(problems: Problem[]): Promise<void> {
     await writeFile(join(outDir, 'index.html'), html, 'utf8');
   }
 
-  // sitemap.xml — one entry per page.
+  // sitemap.xml - one entry per page.
   const today = new Date().toISOString().slice(0, 10);
   const urls = [
     { loc: `${SITE_ORIGIN}/`, priority: '1.0' },
+    // /daily is the bookmarkable surface for the daily problem - changes each
+    // UTC day, so worth indexing on its own (not just via the home page).
+    { loc: `${SITE_ORIGIN}/daily`, priority: '0.9' },
     ...problems.map((p) => ({
       loc: `${SITE_ORIGIN}/p/${p.id}`,
       priority: '0.7',

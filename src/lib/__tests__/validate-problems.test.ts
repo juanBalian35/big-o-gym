@@ -16,7 +16,7 @@ const baseProblem: CodeProblem = {
   variables: [{ name: 'n', meaning: 'length of the input' }],
 };
 
-describe('validateProblems — variables', () => {
+describe('validateProblems - variables', () => {
   it('accepts a valid problem with declared variables', () => {
     expect(() => validateProblems([baseProblem])).not.toThrow();
   });

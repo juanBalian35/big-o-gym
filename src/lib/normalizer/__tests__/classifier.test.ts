@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { classifyAnswer } from '../classifier';
 
-describe('classifyAnswer — syntactic equivalence (correct)', () => {
+describe('classifyAnswer - syntactic equivalence (correct)', () => {
   const cases: [string, string][] = [
     ['O(n)', 'n'],
     ['O(n)', 'O( n )'],
@@ -32,7 +32,7 @@ describe('classifyAnswer — syntactic equivalence (correct)', () => {
   }
 });
 
-describe('classifyAnswer — almost (lossy simplification)', () => {
+describe('classifyAnswer - almost (lossy simplification)', () => {
   const cases: [string, string][] = [
     ['O(2n)', 'O(n)'],
     ['O(5)', 'O(1)'],
@@ -54,7 +54,7 @@ describe('classifyAnswer — almost (lossy simplification)', () => {
   }
 });
 
-describe('classifyAnswer — wrong', () => {
+describe('classifyAnswer - wrong', () => {
   const cases: [string, string][] = [
     ['O(n)', 'O(n²)'],
     ['O(log n)', 'O(n)'],
@@ -72,7 +72,7 @@ describe('classifyAnswer — wrong', () => {
   }
 });
 
-describe('classifyAnswer — parse_error', () => {
+describe('classifyAnswer - parse_error', () => {
   const cases: string[] = ['', '   ', 'linear', 'fast', 'O()', 'O(', 'n +', '++n'];
   for (const input of cases) {
     it(`"${input}" → parse_error`, () => {
@@ -82,7 +82,7 @@ describe('classifyAnswer — parse_error', () => {
   }
 });
 
-describe('classifyAnswer — accepted_equivalents', () => {
+describe('classifyAnswer - accepted_equivalents', () => {
   it('treats accepted equivalent as correct', () => {
     const r = classifyAnswer('O(m·n)', 'O(m * n)', ['O(mn)']);
     expect(r.result).toBe('correct');
@@ -100,7 +100,7 @@ describe('classifyAnswer — accepted_equivalents', () => {
   });
 });
 
-describe('classifyAnswer — multivariable preservation', () => {
+describe('classifyAnswer - multivariable preservation', () => {
   it('does not collapse n + m', () => {
     const r = classifyAnswer('O(n + m)', 'O(n + m)');
     expect(r.result).toBe('correct');
@@ -117,7 +117,7 @@ describe('classifyAnswer — multivariable preservation', () => {
   });
 });
 
-describe('classifyAnswer — message text', () => {
+describe('classifyAnswer - message text', () => {
   it('mentions dropping the constant for O(2n) → O(n)', () => {
     const r = classifyAnswer('O(2n)', 'O(n)');
     expect(r.message?.toLowerCase()).toContain('constant');

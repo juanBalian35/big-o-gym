@@ -86,3 +86,18 @@ export function navigateHome(): void {
   window.history.pushState(null, '', '/');
   window.dispatchEvent(new PopStateEvent('popstate'));
 }
+
+// /daily is the bookmarkable "today's problem" route. Sticky - reload keeps
+// the user on it. A regular practice click sends them back to /.
+const DAILY_PATH = '/daily';
+
+export function isDailyRoute(): boolean {
+  if (typeof window === 'undefined') return false;
+  return window.location.pathname.replace(/\/$/, '') === DAILY_PATH;
+}
+
+export function navigateToDaily(): void {
+  if (typeof window === 'undefined') return;
+  window.history.pushState(null, '', DAILY_PATH);
+  window.dispatchEvent(new PopStateEvent('popstate'));
+}

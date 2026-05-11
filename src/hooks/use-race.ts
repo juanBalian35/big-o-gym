@@ -128,7 +128,7 @@ export function useRace({
   const [flash, setFlash] = useState<Flash>(null);
   const [parseErrorMsg, setParseErrorMsg] = useState<string | null>(null);
   const [summary, setSummary] = useState<RaceDoneSummary | null>(null);
-  // Set when the countdown finishes — until then it's a placeholder that
+  // Set when the countdown finishes - until then it's a placeholder that
   // doesn't drive any visible timer.
   const startedAtRef = useRef<number>(Date.now());
 
@@ -149,7 +149,7 @@ export function useRace({
       );
       return () => window.clearTimeout(id);
     }
-    // Countdown is at 1 — show it for one tick, then go.
+    // Countdown is at 1 - show it for one tick, then go.
     const id = window.setTimeout(() => {
       startedAtRef.current = Date.now();
       setStatus('running');
@@ -166,7 +166,7 @@ export function useRace({
     };
   }, []);
 
-  // Refs read by the abandon listener — avoids stale closures so the event
+  // Refs read by the abandon listener - avoids stale closures so the event
   // captures the user's actual progress at the moment they leave.
   const statusRef = useRef(status);
   const indexRef = useRef(index);
@@ -184,21 +184,29 @@ export function useRace({
     if (!set) return;
     function fireAbandon() {
       if (abandonFiredRef.current) return;
-      if (statusRef.current !== 'running') return;
+      // 'done' is the natural terminal state - race_complete already fired.
+      // 'countdown' and 'running' are both abandonable; we tag which one so
+      // countdown quitters (no problem ever shown) are distinguishable from
+      // mid-race quitters in analytics.
+      if (statusRef.current === 'done') return;
       abandonFiredRef.current = true;
+      const during = statusRef.current;
       track('race_abandon', {
         set_id: set!.id,
-        problem_index: indexRef.current,
+        during,
+        problem_index: during === 'countdown' ? -1 : indexRef.current,
         total: problemsForSet?.length ?? 0,
         time_ms_so_far:
-          Date.now() - startedAtRef.current + penaltyMsRef.current,
+          during === 'countdown'
+            ? 0
+            : Date.now() - startedAtRef.current + penaltyMsRef.current,
         wrong_count: wrongCountRef.current,
       });
     }
     window.addEventListener('pagehide', fireAbandon);
     return () => {
       window.removeEventListener('pagehide', fireAbandon);
-      // Cleanup runs on unmount (route change, key change, etc.). Fire too —
+      // Cleanup runs on unmount (route change, key change, etc.). Fire too -
       // pagehide alone misses in-app navigation.
       fireAbandon();
     };
@@ -210,14 +218,14 @@ export function useRace({
       const current = problemsForSet[index]!;
       const specs = specsFor(current);
 
-      const classifications = specs.map((spec) => ({
-        spec,
-        result: classifyAnswer(
-          answers[spec.key] ?? '',
-          spec.canonical,
-          spec.equivalents
-        ),
-      }));
+      const classifications = specs.map((spec) => {
+        const userAnswer = answers[spec.key] ?? '';
+        return {
+          spec,
+          userAnswer,
+          result: classifyAnswer(userAnswer, spec.canonical, spec.equivalents),
+        };
+      });
 
       const allCorrect = classifications.every(
         (c) => c.result.result === 'correct'
@@ -229,14 +237,26 @@ export function useRace({
         (c) => c.result.result === 'almost'
       );
 
-      track('race_submit', {
+      const submitProps: Record<string, string | number | boolean> = {
         set_id: set.id,
         problem_id: current.id,
         problem_index: index,
         all_correct: allCorrect,
         had_parse_error: hadParse,
         had_almost: hadAlmost,
-      });
+      };
+      if (hadParse) {
+        const offending = classifications.filter(
+          (c) => c.result.result === 'parse_error'
+        );
+        submitProps.parse_error_field = offending
+          .map((c) => c.spec.key)
+          .join('|');
+        submitProps.parse_error_input = offending
+          .map((c) => c.userAnswer)
+          .join('|');
+      }
+      track('race_submit', submitProps);
 
       if (allCorrect) {
         // Brief green flash on the new problem (or final result).
@@ -261,6 +281,10 @@ export function useRace({
             wrong_count: wrongCount,
             new_best: isNewBest,
           });
+          // Suppress the abandon that would otherwise fire on unmount if a
+          // parent re-renders us out of the tree before statusRef catches up
+          // to 'done'.
+          abandonFiredRef.current = true;
           if (isNewBest) {
             track('race_pb', { set_id: set.id, time_ms: finalTimeMs });
           }

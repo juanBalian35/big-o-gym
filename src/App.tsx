@@ -9,21 +9,25 @@ import {
   savePreferredLanguage,
 } from './lib/storage';
 import {
+  isDailyRoute,
   parseRaceRoute,
   navigateHome,
   type RaceRoute,
 } from './lib/url-routing';
 import { problems } from './data/problems';
+import { getCurrentStreak } from './lib/daily';
 import type { Language } from './types/problem';
 
 type Route =
   | { kind: 'practice' }
+  | { kind: 'daily' }
   | { kind: 'race-list' }
   | { kind: 'race-set'; setId: string; vsTimeMs: number | null };
 
 function readRoute(): Route {
   const race = parseRaceRoute();
   if (race) return raceRouteToRoute(race);
+  if (isDailyRoute()) return { kind: 'daily' };
   return { kind: 'practice' };
 }
 
@@ -39,6 +43,13 @@ export function App() {
   );
   const [theme, setThemeState] = useState<Theme>(() => loadTheme());
   const [solvedCount, setSolvedCount] = useState<number>(0);
+  // Streak is derived from localStorage; refresh on any solve (cheap walk).
+  const [streak, setStreak] = useState<number>(() => getCurrentStreak());
+
+  function handleSolvedCountChange(count: number) {
+    setSolvedCount(count);
+    setStreak(getCurrentStreak());
+  }
 
   useEffect(() => {
     applyTheme(theme);
@@ -79,9 +90,11 @@ export function App() {
 
   // Code-language toggle is only meaningful when a code problem is on screen.
   const showLanguageToggle =
-    route.kind === 'practice' || route.kind === 'race-set';
+    route.kind === 'practice' ||
+    route.kind === 'daily' ||
+    route.kind === 'race-set';
 
-  const showProgress = route.kind === 'practice';
+  const showProgress = route.kind === 'practice' || route.kind === 'daily';
 
   return (
     <div className="min-h-screen bg-bg text-text">
@@ -94,12 +107,15 @@ export function App() {
         showLanguageToggle={showLanguageToggle}
         solvedCount={showProgress ? solvedCount : undefined}
         totalCount={showProgress ? problems.length : undefined}
+        streak={streak}
       />
-      {route.kind === 'practice' && (
+      {(route.kind === 'practice' || route.kind === 'daily') && (
         <PracticeView
+          key={route.kind}
           language={language}
           theme={theme}
-          onSolvedCountChange={setSolvedCount}
+          isDaily={route.kind === 'daily'}
+          onSolvedCountChange={handleSolvedCountChange}
         />
       )}
       {route.kind === 'race-list' && <RaceSetList />}

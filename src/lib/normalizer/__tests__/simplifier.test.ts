@@ -10,7 +10,7 @@ function norm(input: string) {
   return { canonical: canonicalize(ast), tracker: t };
 }
 
-describe('simplifier — canonical equivalence', () => {
+describe('simplifier - canonical equivalence', () => {
   it('n*n and n² produce same canonical form', () => {
     expect(norm('n*n').canonical).toBe(norm('n²').canonical);
   });
@@ -31,7 +31,7 @@ describe('simplifier — canonical equivalence', () => {
   });
 });
 
-describe('simplifier — tracker flags', () => {
+describe('simplifier - tracker flags', () => {
   it('does not fire flags on syntactic-only normalization', () => {
     const { tracker } = norm('n*n');
     expect(tracker.droppedConstant).toBe(false);
@@ -80,7 +80,7 @@ describe('simplifier — tracker flags', () => {
   });
 });
 
-describe('simplifier — final shape', () => {
+describe('simplifier - final shape', () => {
   it('5 → 1', () => {
     expect(norm('5').canonical).toBe('C(1)');
   });

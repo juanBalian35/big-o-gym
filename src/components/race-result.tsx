@@ -1,7 +1,12 @@
 import { useState } from 'react';
 import type { RaceDoneSummary } from '../hooks/use-race';
 import { formatTime, formatDelta } from '../lib/format-time';
-import { buildRaceShareUrl, navigateRace, navigateHome } from '../lib/url-routing';
+import {
+  buildRaceShareUrl,
+  navigateRace,
+  navigateHome,
+  navigateToDaily,
+} from '../lib/url-routing';
 import { track } from '../lib/track';
 
 interface Props {
@@ -55,7 +60,7 @@ export function RaceResult({ summary, onRunAgain }: Props) {
             value={
               summary.penaltyMs > 0
                 ? `+${formatTime(summary.penaltyMs)} (${summary.wrongCount})`
-                : '—'
+                : '-'
             }
           />
           <Stat
@@ -67,7 +72,7 @@ export function RaceResult({ summary, onRunAgain }: Props) {
                       ? ` (${formatDelta(pbDelta)})`
                       : ''
                   }`
-                : '—'
+                : '-'
             }
           />
         </dl>
@@ -111,13 +116,20 @@ export function RaceResult({ summary, onRunAgain }: Props) {
           </div>
         </div>
       </section>
-      <div>
+      <div className="flex items-center justify-between gap-3">
         <button
           type="button"
           onClick={navigateHome}
           className="text-xs text-muted hover:text-text underline-offset-2 hover:underline"
         >
           ← back to practice
+        </button>
+        <button
+          type="button"
+          onClick={navigateToDaily}
+          className="text-xs text-accent underline-offset-2 hover:underline"
+        >
+          today's problem →
         </button>
       </div>
     </main>

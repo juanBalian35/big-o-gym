@@ -4,7 +4,7 @@
 // stored in localStorage. Sent as a `vid` prop on every track() event.
 //
 // What this is NOT: a user identifier. We never know who a vid belongs to
-// — no email, no IP, no fingerprint. The UUID is generated locally and
+// - no email, no IP, no fingerprint. The UUID is generated locally and
 // only ever crosses the wire as a string in our analytics events. Clearing
 // site data clears the vid; private browsing never persists it.
 //

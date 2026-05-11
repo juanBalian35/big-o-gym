@@ -2,7 +2,7 @@
 // env-configured key is present) and a console.info in dev. Each event call
 // is wrapped in try/catch so analytics can never break the app.
 //
-// Every event includes a `vid` prop — an opaque, client-generated UUID
+// Every event includes a `vid` prop - an opaque, client-generated UUID
 // stored in localStorage. It identifies a *browser install*, not a person.
 // See src/lib/visitor.ts for the rationale.
 //
@@ -29,7 +29,12 @@ export type EventName =
   | 'race_pb'
   | 'race_submit'
   | 'race_abandon'
-  | 'race_callout_click';
+  | 'race_callout_click'
+  | 'nudge_shown'
+  | 'nudge_clicked'
+  | 'daily_started'
+  | 'daily_solved'
+  | 'show_solution';
 
 type PropValue = string | number | boolean;
 
@@ -49,7 +54,6 @@ export function track(
       posthog.capture(name, fullProps);
     }
     if (isDev) {
-      // eslint-disable-next-line no-console
       console.info('[track]', name, fullProps);
     }
   } catch {

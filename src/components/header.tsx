@@ -36,6 +36,7 @@ interface Props {
   showLanguageToggle?: boolean;
   solvedCount?: number;
   totalCount?: number;
+  streak?: number;
 }
 
 export function Header({
@@ -47,6 +48,7 @@ export function Header({
   showLanguageToggle = true,
   solvedCount,
   totalCount,
+  streak,
 }: Props) {
   const showProgress =
     typeof solvedCount === 'number' && typeof totalCount === 'number';
@@ -66,9 +68,21 @@ export function Header({
               big-o-gym
             </h1>
             {showProgress && (
-              <span className="ml-1 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted tabular-nums">
+              <span
+                title={`${solvedCount} of ${totalCount} problems solved (lifetime)`}
+                className="ml-1 rounded border border-border px-1.5 py-0.5 text-[10px] text-muted tabular-nums"
+              >
                 <span className="text-text">{solvedCount}</span>
                 <span className="opacity-60"> / {totalCount}</span>
+              </span>
+            )}
+            {typeof streak === 'number' && streak > 0 && (
+              <span
+                title={`${streak}-day daily streak — consecutive days you've solved the daily problem`}
+                className="rounded border border-border px-1.5 py-0.5 text-[10px] text-muted tabular-nums"
+              >
+                <span className="text-accent">★</span>
+                <span className="text-text"> {streak}</span>
               </span>
             )}
           </div>
@@ -104,7 +118,7 @@ function ThemeToggle({
       onClick={() => onThemeChange(next)}
       aria-label={`Switch to ${next} mode`}
       title={`Switch to ${next} mode`}
-      className="rounded border border-border px-2 py-1 text-sm font-bold text-muted hover:text-text transition-colors"
+      className="rounded border border-border px-3 py-1 text-xs text-muted hover:text-text transition-colors"
     >
       {theme === 'dark' ? '◐' : '○'}
     </button>
@@ -134,7 +148,8 @@ function LanguageToggle({
         active={language === 'javascript'}
         onClick={() => onLanguageChange('javascript')}
       >
-        javascript
+        <span className="sm:hidden">js</span>
+        <span className="hidden sm:inline">javascript</span>
       </ToggleButton>
     </div>
   );
