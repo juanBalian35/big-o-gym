@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Valid Palindrome in Python and JavaScript. Concept tested: amortized inner loop in a two-pointer scan."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Valid Palindrome — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/valid-palindrome" />
+    <meta property="og:title" content="Valid Palindrome — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Valid Palindrome in Python and JavaScript. Concept tested: amortized inner loop in a two-pointer scan."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Valid Palindrome — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Valid Palindrome in Python and JavaScript. Concept tested: amortized inner loop in a two-pointer scan."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/valid-palindrome" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Valid Palindrome",
+  "description": "Practice the time and space complexity of Valid Palindrome — concept tested: amortized inner loop in a two-pointer scan.",
+  "url": "https://bigogym.io/p/valid-palindrome",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "amortized inner loop in a two-pointer scan",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Valid Palindrome</h2>
+      <p><strong>Concept:</strong> amortized inner loop in a two-pointer scan</p>
+      <pre><code>def is_palindrome(s):
+    left, right = 0, len(s) - 1
+    while left &lt; right:
+        while left &lt; right and not s[left].isalnum():
+            left += 1
+        while left &lt; right and not s[right].isalnum():
+            right -= 1
+        if s[left].lower() != s[right].lower():
+            return False
+        left += 1
+        right -= 1
+    return True</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input string</li></ul>
+      <h3>Explanation</h3>
+      <p>The two pointers together cover each character at most once — **O(n)** total. Only two indices are tracked, so space is **O(1)**. The nested skip-loops can fool you into thinking it is quadratic, but the inner work is amortized over the outer.</p>
+    </main></div>
+  </body>
+</html>

@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Longest Repeating Char Replacement in Python and JavaScript. Concept tested: amortized window growth."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Longest Repeating Char Replacement — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/longest-repeating-char-replacement" />
+    <meta property="og:title" content="Longest Repeating Char Replacement — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Longest Repeating Char Replacement in Python and JavaScript. Concept tested: amortized window growth."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Longest Repeating Char Replacement — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Longest Repeating Char Replacement in Python and JavaScript. Concept tested: amortized window growth."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/longest-repeating-char-replacement" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Longest Repeating Char Replacement",
+  "description": "Practice the time and space complexity of Longest Repeating Char Replacement — concept tested: amortized window growth.",
+  "url": "https://bigogym.io/p/longest-repeating-char-replacement",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "amortized window growth",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Longest Repeating Char Replacement</h2>
+      <p><strong>Concept:</strong> amortized window growth</p>
+      <pre><code>def character_replacement(s, k):
+    counts = {}
+    left = 0
+    max_count = 0
+    best = 0
+    for right, c in enumerate(s):
+        counts[c] = counts.get(c, 0) + 1
+        max_count = max(max_count, counts[c])
+        while right - left + 1 - max_count &gt; k:
+            counts[s[left]] -= 1
+            left += 1
+        best = max(best, right - left + 1)
+    return best</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input string</li></ul>
+      <h3>Explanation</h3>
+      <p>The window shifts forward only — each index enters and leaves at most once, giving **O(n)** time despite the inner while-loop. The counts map holds at most one entry per alphabet character, so space is **O(1)** for a fixed alphabet. The subtle part: `max_count` is never decremented, but the overall answer remains correct because the window size only matters at its peak.</p>
+    </main></div>
+  </body>
+</html>

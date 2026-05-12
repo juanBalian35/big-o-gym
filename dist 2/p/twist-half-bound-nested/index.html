@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Half Bound Nested in Python and JavaScript. Concept tested: constant factor doesn't change the class."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Half Bound Nested — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/twist-half-bound-nested" />
+    <meta property="og:title" content="Half Bound Nested — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Half Bound Nested in Python and JavaScript. Concept tested: constant factor doesn't change the class."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Half Bound Nested — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Half Bound Nested in Python and JavaScript. Concept tested: constant factor doesn't change the class."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/twist-half-bound-nested" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Half Bound Nested",
+  "description": "Practice the time and space complexity of Half Bound Nested — concept tested: constant factor doesn't change the class.",
+  "url": "https://bigogym.io/p/twist-half-bound-nested",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "constant factor doesn't change the class",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Half Bound Nested</h2>
+      <p><strong>Concept:</strong> constant factor doesn't change the class</p>
+      <pre><code>def count_smaller_pairs(arr):
+    count = 0
+    n = len(arr)
+    for i in range(n):
+        for j in range(i):
+            if arr[j] &lt; arr[i]:
+                count += 1
+    return count</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input array</li></ul>
+      <h3>Explanation</h3>
+      <p>It looks like &quot;half&quot; of a quadratic loop because `j &lt; i`, but the total comparisons are `0 + 1 + ... + (n-1) = n(n-1)/2` which is still **O(n²)** after dropping the constant. Space is **O(1)**.</p>
+    </main></div>
+  </body>
+</html>

@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Same Tree in Python and JavaScript. Concept tested: tree recursion: nodes vs stack depth."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Same Tree — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/same-tree" />
+    <meta property="og:title" content="Same Tree — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Same Tree in Python and JavaScript. Concept tested: tree recursion: nodes vs stack depth."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Same Tree — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Same Tree in Python and JavaScript. Concept tested: tree recursion: nodes vs stack depth."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/same-tree" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Same Tree",
+  "description": "Practice the time and space complexity of Same Tree — concept tested: tree recursion: nodes vs stack depth.",
+  "url": "https://bigogym.io/p/same-tree",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "tree recursion: nodes vs stack depth",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Same Tree</h2>
+      <p><strong>Concept:</strong> tree recursion: nodes vs stack depth</p>
+      <pre><code>def is_same_tree(p, q):
+    if not p and not q:
+        return True
+    if not p or not q:
+        return False
+    if p.val != q.val:
+        return False
+    return is_same_tree(p.left, q.left) and is_same_tree(p.right, q.right)</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — number of nodes in either tree</li><li><code>h</code> — height of the trees</li></ul>
+      <h3>Explanation</h3>
+      <p>In the worst case (trees identical) every node is visited — **O(n)** time. Recursion stack uses **O(h)** space; balanced is `log n`, skewed is `n`. Early exit on mismatch only improves the constant, not the asymptotic.</p>
+    </main></div>
+  </body>
+</html>

@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Pacific Atlantic in Python and JavaScript. Concept tested: multi-source DFS from grid boundary."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Pacific Atlantic — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/pacific-atlantic" />
+    <meta property="og:title" content="Pacific Atlantic — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Pacific Atlantic in Python and JavaScript. Concept tested: multi-source DFS from grid boundary."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Pacific Atlantic — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Pacific Atlantic in Python and JavaScript. Concept tested: multi-source DFS from grid boundary."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/pacific-atlantic" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Pacific Atlantic",
+  "description": "Practice the time and space complexity of Pacific Atlantic — concept tested: multi-source DFS from grid boundary.",
+  "url": "https://bigogym.io/p/pacific-atlantic",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "multi-source DFS from grid boundary",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Pacific Atlantic</h2>
+      <p><strong>Concept:</strong> multi-source DFS from grid boundary</p>
+      <pre><code>def pacific_atlantic(heights):
+    if not heights:
+        return []
+    m, n = len(heights), len(heights[0])
+    pac, atl = set(), set()
+
+    def dfs(r, c, visited, prev):
+        if ((r, c) in visited or r &lt; 0 or c &lt; 0
+                or r &gt;= m or c &gt;= n or heights[r][c] &lt; prev):
+            return
+        visited.add((r, c))
+        for dr, dc in [(1, 0), (-1, 0), (0, 1), (0, -1)]:
+            dfs(r + dr, c + dc, visited, heights[r][c])
+
+    for r in range(m):
+        dfs(r, 0, pac, 0)
+        dfs(r, n - 1, atl, 0)
+    for c in range(n):
+        dfs(0, c, pac, 0)
+        dfs(m - 1, c, atl, 0)
+    return [list(cell) for cell in pac &amp; atl]</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>m</code> — number of rows in the grid</li><li><code>n</code> — number of columns in the grid</li></ul>
+      <h3>Explanation</h3>
+      <p>Two DFS traversals from the borders, each visiting every cell at most once — **O(m · n)** time. Both visited sets together hold up to `m · n` cells, and recursion stack matches; **O(m · n)** auxiliary.</p>
+    </main></div>
+  </body>
+</html>

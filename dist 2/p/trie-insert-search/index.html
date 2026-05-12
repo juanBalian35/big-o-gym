@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Trie Insert Search in Python and JavaScript. Concept tested: operation cost vs structure size."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Trie Insert Search — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/trie-insert-search" />
+    <meta property="og:title" content="Trie Insert Search — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Trie Insert Search in Python and JavaScript. Concept tested: operation cost vs structure size."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Trie Insert Search — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Trie Insert Search in Python and JavaScript. Concept tested: operation cost vs structure size."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/trie-insert-search" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Trie Insert Search",
+  "description": "Practice the time and space complexity of Trie Insert Search — concept tested: operation cost vs structure size.",
+  "url": "https://bigogym.io/p/trie-insert-search",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "operation cost vs structure size",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Trie Insert Search</h2>
+      <p><strong>Concept:</strong> operation cost vs structure size</p>
+      <pre><code>class Trie:
+    def __init__(self):
+        self.children = {}
+        self.end = False
+
+    def insert(self, word):
+        node = self
+        for c in word:
+            if c not in node.children:
+                node.children[c] = Trie()
+            node = node.children[c]
+        node.end = True
+
+    def search(self, word):
+        node = self
+        for c in word:
+            if c not in node.children:
+                return False
+            node = node.children[c]
+        return node.end</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>k</code> — length of the word being inserted or searched</li><li><code>n</code> — total characters across all inserted words</li></ul>
+      <h3>Explanation</h3>
+      <p>Both insert and search walk one node per character — **O(k)** time per operation, where `k` is the length of the word. The trie as a whole holds one node per distinct prefix; total nodes are bounded by total characters across all inserted words, giving **O(n)** space overall.</p>
+    </main></div>
+  </body>
+</html>

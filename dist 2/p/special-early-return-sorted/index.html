@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Early Return Sorted in Python and JavaScript. Concept tested: worst case vs best case."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Early Return Sorted — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/special-early-return-sorted" />
+    <meta property="og:title" content="Early Return Sorted — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Early Return Sorted in Python and JavaScript. Concept tested: worst case vs best case."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Early Return Sorted — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Early Return Sorted in Python and JavaScript. Concept tested: worst case vs best case."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/special-early-return-sorted" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Early Return Sorted",
+  "description": "Practice the time and space complexity of Early Return Sorted — concept tested: worst case vs best case.",
+  "url": "https://bigogym.io/p/special-early-return-sorted",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "worst case vs best case",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Early Return Sorted</h2>
+      <p><strong>Concept:</strong> worst case vs best case</p>
+      <pre><code>def contains_target(sorted_arr, target):
+    for x in sorted_arr:
+        if x == target:
+            return True
+        if x &gt; target:
+            return False
+    return False</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the sorted input array</li></ul>
+      <h3>Explanation</h3>
+      <p>The early return makes some inputs return in O(1) — but big-O describes the **worst case**: target absent and larger than every element. Worst case is **O(n)**. The best case is O(1), the average depends on distribution. Big-O conventions ignore best/average unless stated.</p>
+    </main></div>
+  </body>
+</html>

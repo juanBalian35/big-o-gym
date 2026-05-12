@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Insert Interval in Python and JavaScript. Concept tested: linear sweep on already-sorted input."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Insert Interval — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/insert-interval" />
+    <meta property="og:title" content="Insert Interval — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Insert Interval in Python and JavaScript. Concept tested: linear sweep on already-sorted input."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Insert Interval — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Insert Interval in Python and JavaScript. Concept tested: linear sweep on already-sorted input."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/insert-interval" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Insert Interval",
+  "description": "Practice the time and space complexity of Insert Interval — concept tested: linear sweep on already-sorted input.",
+  "url": "https://bigogym.io/p/insert-interval",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "linear sweep on already-sorted input",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Insert Interval</h2>
+      <p><strong>Concept:</strong> linear sweep on already-sorted input</p>
+      <pre><code>def insert(intervals, new_interval):
+    res = []
+    i, n = 0, len(intervals)
+    while i &lt; n and intervals[i][1] &lt; new_interval[0]:
+        res.append(intervals[i])
+        i += 1
+    while i &lt; n and intervals[i][0] &lt;= new_interval[1]:
+        new_interval[0] = min(new_interval[0], intervals[i][0])
+        new_interval[1] = max(new_interval[1], intervals[i][1])
+        i += 1
+    res.append(new_interval)
+    while i &lt; n:
+        res.append(intervals[i])
+        i += 1
+    return res</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — number of input intervals</li></ul>
+      <h3>Explanation</h3>
+      <p>A single sweep over already-sorted intervals — **O(n)** time. The result list holds up to `n + 1` intervals, **O(n)** space. No sorting needed because the input is sorted by hypothesis.</p>
+    </main></div>
+  </body>
+</html>

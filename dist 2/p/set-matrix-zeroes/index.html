@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Set Matrix Zeroes in Python and JavaScript. Concept tested: in-place markers replace auxiliary array."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Set Matrix Zeroes — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/set-matrix-zeroes" />
+    <meta property="og:title" content="Set Matrix Zeroes — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Set Matrix Zeroes in Python and JavaScript. Concept tested: in-place markers replace auxiliary array."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Set Matrix Zeroes — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Set Matrix Zeroes in Python and JavaScript. Concept tested: in-place markers replace auxiliary array."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/set-matrix-zeroes" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Set Matrix Zeroes",
+  "description": "Practice the time and space complexity of Set Matrix Zeroes — concept tested: in-place markers replace auxiliary array.",
+  "url": "https://bigogym.io/p/set-matrix-zeroes",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "in-place markers replace auxiliary array",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Set Matrix Zeroes</h2>
+      <p><strong>Concept:</strong> in-place markers replace auxiliary array</p>
+      <pre><code>def set_zeroes(matrix):
+    m, n = len(matrix), len(matrix[0])
+    first_row_zero = any(matrix[0][c] == 0 for c in range(n))
+    first_col_zero = any(matrix[r][0] == 0 for r in range(m))
+    for r in range(1, m):
+        for c in range(1, n):
+            if matrix[r][c] == 0:
+                matrix[r][0] = 0
+                matrix[0][c] = 0
+    for r in range(1, m):
+        for c in range(1, n):
+            if matrix[r][0] == 0 or matrix[0][c] == 0:
+                matrix[r][c] = 0
+    if first_row_zero:
+        for c in range(n):
+            matrix[0][c] = 0
+    if first_col_zero:
+        for r in range(m):
+            matrix[r][0] = 0</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>m</code> — number of rows in the matrix</li><li><code>n</code> — number of columns in the matrix</li></ul>
+      <h3>Explanation</h3>
+      <p>A constant number of passes over the grid — **O(m · n)** time. By using the first row and column as marker storage we avoid the O(m + n) auxiliary array, achieving **O(1)** auxiliary space.</p>
+    </main></div>
+  </body>
+</html>

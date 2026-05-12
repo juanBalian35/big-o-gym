@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Course Schedule in Python and JavaScript. Concept tested: graph traversal: vertex + edge cost."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Course Schedule — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/course-schedule" />
+    <meta property="og:title" content="Course Schedule — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Course Schedule in Python and JavaScript. Concept tested: graph traversal: vertex + edge cost."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Course Schedule — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Course Schedule in Python and JavaScript. Concept tested: graph traversal: vertex + edge cost."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/course-schedule" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Course Schedule",
+  "description": "Practice the time and space complexity of Course Schedule — concept tested: graph traversal: vertex + edge cost.",
+  "url": "https://bigogym.io/p/course-schedule",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "graph traversal: vertex + edge cost",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Course Schedule</h2>
+      <p><strong>Concept:</strong> graph traversal: vertex + edge cost</p>
+      <pre><code>def can_finish(num_courses, prerequisites):
+    graph = [[] for _ in range(num_courses)]
+    for a, b in prerequisites:
+        graph[b].append(a)
+    UNVISITED, VISITING, DONE = 0, 1, 2
+    state = [UNVISITED] * num_courses
+
+    def dfs(node):
+        if state[node] == VISITING:
+            return False
+        if state[node] == DONE:
+            return True
+        state[node] = VISITING
+        for nb in graph[node]:
+            if not dfs(nb):
+                return False
+        state[node] = DONE
+        return True
+
+    for i in range(num_courses):
+        if not dfs(i):
+            return False
+    return True</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>v</code> — number of vertices (courses)</li><li><code>e</code> — number of edges (prerequisites)</li></ul>
+      <h3>Explanation</h3>
+      <p>Each vertex is visited once via the three-color DFS, each edge traversed once — **O(V + E)** time. The adjacency list itself is **O(V + E)** space; the recursion stack is bounded by `V`. Combined: **O(V + E)**.</p>
+    </main></div>
+  </body>
+</html>

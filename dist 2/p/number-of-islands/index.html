@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Number Of Islands in Python and JavaScript. Concept tested: amortized DFS over a grid."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Number Of Islands — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/number-of-islands" />
+    <meta property="og:title" content="Number Of Islands — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Number Of Islands in Python and JavaScript. Concept tested: amortized DFS over a grid."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Number Of Islands — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Number Of Islands in Python and JavaScript. Concept tested: amortized DFS over a grid."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/number-of-islands" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Number Of Islands",
+  "description": "Practice the time and space complexity of Number Of Islands — concept tested: amortized DFS over a grid.",
+  "url": "https://bigogym.io/p/number-of-islands",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "amortized DFS over a grid",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Number Of Islands</h2>
+      <p><strong>Concept:</strong> amortized DFS over a grid</p>
+      <pre><code>def num_islands(grid):
+    if not grid:
+        return 0
+    m, n = len(grid), len(grid[0])
+    count = 0
+
+    def dfs(r, c):
+        if r &lt; 0 or c &lt; 0 or r &gt;= m or c &gt;= n or grid[r][c] != '1':
+            return
+        grid[r][c] = '0'
+        dfs(r + 1, c)
+        dfs(r - 1, c)
+        dfs(r, c + 1)
+        dfs(r, c - 1)
+
+    for r in range(m):
+        for c in range(n):
+            if grid[r][c] == '1':
+                dfs(r, c)
+                count += 1
+    return count</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>m</code> — number of rows in the grid</li><li><code>n</code> — number of columns in the grid</li></ul>
+      <h3>Explanation</h3>
+      <p>Each cell is visited at most once across all DFS calls — total time **O(m · n)**. The recursion stack can grow to the size of the largest island, which in the worst case is the whole grid — **O(m · n)** auxiliary space.</p>
+    </main></div>
+  </body>
+</html>

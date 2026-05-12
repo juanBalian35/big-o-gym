@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <!-- left O weight -->
+  <rect x="2" y="8" width="8" height="2" fill="#7ee787"/>
+  <rect x="2" y="22" width="8" height="2" fill="#7ee787"/>
+  <rect x="2" y="10" width="2" height="12" fill="#7ee787"/>
+  <rect x="8" y="10" width="2" height="12" fill="#7ee787"/>
+  <!-- bar -->
+  <rect x="10" y="14" width="12" height="4" fill="#e6edf3"/>
+  <!-- right O weight -->
+  <rect x="22" y="8" width="8" height="2" fill="#7ee787"/>
+  <rect x="22" y="22" width="8" height="2" fill="#7ee787"/>
+  <rect x="22" y="10" width="2" height="12" fill="#7ee787"/>
+  <rect x="28" y="10" width="2" height="12" fill="#7ee787"/>
+</svg>

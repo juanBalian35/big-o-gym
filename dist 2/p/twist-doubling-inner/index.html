@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Doubling Inner in Python and JavaScript. Concept tested: doubling makes the inner loop logarithmic."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Doubling Inner — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/twist-doubling-inner" />
+    <meta property="og:title" content="Doubling Inner — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Doubling Inner in Python and JavaScript. Concept tested: doubling makes the inner loop logarithmic."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Doubling Inner — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Doubling Inner in Python and JavaScript. Concept tested: doubling makes the inner loop logarithmic."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/twist-doubling-inner" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Doubling Inner",
+  "description": "Practice the time and space complexity of Doubling Inner — concept tested: doubling makes the inner loop logarithmic.",
+  "url": "https://bigogym.io/p/twist-doubling-inner",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "doubling makes the inner loop logarithmic",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Doubling Inner</h2>
+      <p><strong>Concept:</strong> doubling makes the inner loop logarithmic</p>
+      <pre><code>def count_doublings(arr):
+    n = len(arr)
+    count = 0
+    for i in range(n):
+        j = 1
+        while j &lt; n:
+            count += 1
+            j *= 2
+    return count</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input array</li></ul>
+      <h3>Explanation</h3>
+      <p>Looks quadratic at first glance — two nested loops — but the inner loop multiplies `j` by 2 each step, so it runs **O(log n)** times, not `n`. Outer × inner = **O(n log n)**. Space is **O(1)**.</p>
+    </main></div>
+  </body>
+</html>

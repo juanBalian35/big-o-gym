@@ -4,7 +4,7 @@
 import posthog from 'posthog-js';
 
 const KEY = import.meta.env.VITE_POSTHOG_KEY;
-const HOST = import.meta.env.VITE_POSTHOG_HOST ?? 'https://us.i.posthog.com';
+const HOST = import.meta.env.VITE_POSTHOG_HOST ?? 'https://enreversa.bigogym.io';
 
 let initialized = false;
 
@@ -22,6 +22,7 @@ export function initPostHog(): void {
 
   posthog.init(KEY, {
     api_host: HOST,
+    ui_host: 'https://us.posthog.com',
     // Don't create a "person profile" for anonymous users; we only need
     // event counts. Cheaper on the PostHog free tier and matches the spec's
     // "no per-user tracking" stance.

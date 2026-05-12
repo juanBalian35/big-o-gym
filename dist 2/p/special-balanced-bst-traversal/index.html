@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Balanced Bst Traversal in Python and JavaScript. Concept tested: balanced ⇒ logarithmic stack depth."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Balanced Bst Traversal — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/special-balanced-bst-traversal" />
+    <meta property="og:title" content="Balanced Bst Traversal — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Balanced Bst Traversal in Python and JavaScript. Concept tested: balanced ⇒ logarithmic stack depth."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Balanced Bst Traversal — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Balanced Bst Traversal in Python and JavaScript. Concept tested: balanced ⇒ logarithmic stack depth."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/special-balanced-bst-traversal" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Balanced Bst Traversal",
+  "description": "Practice the time and space complexity of Balanced Bst Traversal — concept tested: balanced ⇒ logarithmic stack depth.",
+  "url": "https://bigogym.io/p/special-balanced-bst-traversal",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "balanced ⇒ logarithmic stack depth",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Balanced Bst Traversal</h2>
+      <p><strong>Concept:</strong> balanced ⇒ logarithmic stack depth</p>
+      <pre><code>def in_order(node, out):
+    if not node:
+        return
+    in_order(node.left, out)
+    out.append(node.val)
+    in_order(node.right, out)
+
+def traverse(root):
+    out = []
+    in_order(root, out)
+    return out</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — number of nodes in the balanced tree</li></ul>
+      <h3>Explanation</h3>
+      <p>Every node is visited once — **O(n)** time. The recursion stack grows with tree depth: for a **balanced** BST the depth is `log n`, so auxiliary space is **O(log n)**. For a degenerate (chain) tree it would be O(n) — the balanced assumption is the whole lesson here.</p>
+    </main></div>
+  </body>
+</html>

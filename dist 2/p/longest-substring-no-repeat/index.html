@@ -1,0 +1,103 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Longest Substring No Repeat in Python and JavaScript. Concept tested: sliding window with bounded auxiliary state."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Longest Substring No Repeat — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/longest-substring-no-repeat" />
+    <meta property="og:title" content="Longest Substring No Repeat — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Longest Substring No Repeat in Python and JavaScript. Concept tested: sliding window with bounded auxiliary state."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Longest Substring No Repeat — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Longest Substring No Repeat in Python and JavaScript. Concept tested: sliding window with bounded auxiliary state."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/longest-substring-no-repeat" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Longest Substring No Repeat",
+  "description": "Practice the time and space complexity of Longest Substring No Repeat — concept tested: sliding window with bounded auxiliary state.",
+  "url": "https://bigogym.io/p/longest-substring-no-repeat",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "sliding window with bounded auxiliary state",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Longest Substring No Repeat</h2>
+      <p><strong>Concept:</strong> sliding window with bounded auxiliary state</p>
+      <pre><code>def length_of_longest_substring(s):
+    seen = {}
+    left = 0
+    best = 0
+    for right, c in enumerate(s):
+        if c in seen and seen[c] &gt;= left:
+            left = seen[c] + 1
+        seen[c] = right
+        best = max(best, right - left + 1)
+    return best</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input string</li><li><code>c</code> — size of the character set / alphabet</li></ul>
+      <h3>Explanation</h3>
+      <p>Each character enters and leaves the window at most once — **O(n)** time. The map holds at most one entry per distinct character, bounded by **O(min(n, c))** where `c` is the alphabet size; treating `c` as a constant gives **O(1)**. Either form is defensible.</p>
+    </main></div>
+  </body>
+</html>

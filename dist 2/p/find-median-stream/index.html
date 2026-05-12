@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Find Median Stream in Python and JavaScript. Concept tested: two heaps balance for log-time insertion."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Find Median Stream — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/find-median-stream" />
+    <meta property="og:title" content="Find Median Stream — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Find Median Stream in Python and JavaScript. Concept tested: two heaps balance for log-time insertion."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Find Median Stream — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Find Median Stream in Python and JavaScript. Concept tested: two heaps balance for log-time insertion."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/find-median-stream" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Find Median Stream",
+  "description": "Practice the time and space complexity of Find Median Stream — concept tested: two heaps balance for log-time insertion.",
+  "url": "https://bigogym.io/p/find-median-stream",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "two heaps balance for log-time insertion",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Find Median Stream</h2>
+      <p><strong>Concept:</strong> two heaps balance for log-time insertion</p>
+      <pre><code>import heapq
+
+class MedianFinder:
+    def __init__(self):
+        self.lo = []  # max-heap (store negated)
+        self.hi = []  # min-heap
+
+    def add_num(self, num):
+        heapq.heappush(self.lo, -num)
+        heapq.heappush(self.hi, -heapq.heappop(self.lo))
+        if len(self.hi) &gt; len(self.lo):
+            heapq.heappush(self.lo, -heapq.heappop(self.hi))
+
+    def find_median(self):
+        if len(self.lo) &gt; len(self.hi):
+            return -self.lo[0]
+        return (-self.lo[0] + self.hi[0]) / 2</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — number of elements added so far</li></ul>
+      <h3>Explanation</h3>
+      <p>`addNum` does a constant number of heap pushes/pops, each **O(log n)** — so per-add time is **O(log n)**. `findMedian` only peeks both heap tops in **O(1)**. The two heaps together hold all `n` elements seen so far, giving **O(n)** total space.</p>
+    </main></div>
+  </body>
+</html>

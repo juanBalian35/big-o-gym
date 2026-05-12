@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Word Break in Python and JavaScript. Concept tested: DP × dictionary scan, multivariable."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Word Break — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/word-break" />
+    <meta property="og:title" content="Word Break — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Word Break in Python and JavaScript. Concept tested: DP × dictionary scan, multivariable."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Word Break — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Word Break in Python and JavaScript. Concept tested: DP × dictionary scan, multivariable."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/word-break" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Word Break",
+  "description": "Practice the time and space complexity of Word Break — concept tested: DP × dictionary scan, multivariable.",
+  "url": "https://bigogym.io/p/word-break",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "DP × dictionary scan, multivariable",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Word Break</h2>
+      <p><strong>Concept:</strong> DP × dictionary scan, multivariable</p>
+      <pre><code>def word_break(s, word_dict):
+    n = len(s)
+    dp = [False] * (n + 1)
+    dp[0] = True
+    for i in range(1, n + 1):
+        for word in word_dict:
+            wlen = len(word)
+            if wlen &lt;= i and dp[i - wlen] and s[i - wlen:i] == word:
+                dp[i] = True
+                break
+    return dp[n]</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — length of the input string s</li><li><code>m</code> — number of words in the dictionary</li></ul>
+      <h3>Explanation</h3>
+      <p>For each of the `n` positions we try every dictionary word (`m` of them), and the substring comparison is up to `n` characters — **O(n² · m)** time. The DP array holds `n + 1` booleans, **O(n)** space.</p>
+    </main></div>
+  </body>
+</html>

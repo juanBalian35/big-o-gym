@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Practice the time and space complexity of Validate Bst in Python and JavaScript. Concept tested: tree recursion with bounds carried in args."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Validate Bst — Big O Gym</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/p/validate-bst" />
+    <meta property="og:title" content="Validate Bst — Big O Gym" />
+    <meta
+      property="og:description"
+      content="Practice the time and space complexity of Validate Bst in Python and JavaScript. Concept tested: tree recursion with bounds carried in args."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Validate Bst — Big O Gym" />
+    <meta
+      name="twitter:description"
+      content="Practice the time and space complexity of Validate Bst in Python and JavaScript. Concept tested: tree recursion with bounds carried in args."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/p/validate-bst" />
+
+    <script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "LearningResource",
+  "name": "Validate Bst",
+  "description": "Practice the time and space complexity of Validate Bst — concept tested: tree recursion with bounds carried in args.",
+  "url": "https://bigogym.io/p/validate-bst",
+  "educationalUse": "practice",
+  "learningResourceType": "code reading exercise",
+  "teaches": "tree recursion with bounds carried in args",
+  "inLanguage": "en",
+  "isPartOf": {
+    "@type": "WebApplication",
+    "name": "Big O Gym",
+    "url": "https://bigogym.io/"
+  },
+  "isAccessibleForFree": true
+}
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Validate Bst</h2>
+      <p><strong>Concept:</strong> tree recursion with bounds carried in args</p>
+      <pre><code>def is_valid_bst(node, lo=float('-inf'), hi=float('inf')):
+    if not node:
+        return True
+    if not (lo &lt; node.val &lt; hi):
+        return False
+    return (is_valid_bst(node.left, lo, node.val) and
+            is_valid_bst(node.right, node.val, hi))</code></pre>
+      <h3>Variables</h3>
+      <ul><li><code>n</code> — number of nodes in the tree</li><li><code>h</code> — height of the tree</li></ul>
+      <h3>Explanation</h3>
+      <p>Each node is checked once with O(1) bounds work — **O(n)** time. Recursion depth is the tree height **O(h)** — `log n` balanced, `n` skewed.</p>
+    </main></div>
+  </body>
+</html>

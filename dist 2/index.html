@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Free tool for practicing time and space complexity analysis on code snippets in Python and JavaScript. Designed for technical interview prep — type the answer, get instant feedback."
+    />
+    <meta name="theme-color" content="#0b0d10" />
+    <title>Big O Gym — practice time and space complexity for interviews</title>
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://bigogym.io/" />
+    <meta property="og:title" content="Big O Gym — practice time and space complexity for interviews" />
+    <meta
+      property="og:description"
+      content="Free tool for practicing time and space complexity analysis on code snippets in Python and JavaScript. Designed for technical interview prep — type the answer, get instant feedback."
+    />
+    <meta property="og:image" content="/og.svg" />
+    <meta property="og:image:type" content="image/svg+xml" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:site" content="@j3balian" />
+    <meta name="twitter:creator" content="@j3balian" />
+    <meta name="twitter:title" content="Big O Gym — practice time and space complexity for interviews" />
+    <meta
+      name="twitter:description"
+      content="Free tool for practicing time and space complexity analysis on code snippets in Python and JavaScript. Designed for technical interview prep — type the answer, get instant feedback."
+    />
+    <meta name="twitter:image" content="/og.svg" />
+
+    <link rel="canonical" href="https://bigogym.io/" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebApplication",
+        "name": "Big O Gym",
+        "url": "https://bigogym.io/",
+        "description": "Free tool for practicing time and space complexity analysis on code snippets in Python and JavaScript. Designed for technical interview prep.",
+        "applicationCategory": "EducationalApplication",
+        "operatingSystem": "Any (web)",
+        "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+      }
+    </script>
+    <!--
+      Analytics is wired through PostHog (src/lib/posthog-init.ts). It reads
+      VITE_POSTHOG_KEY at build time. Set it in .env.local for dev or in
+      your hosting provider's env vars for prod (Cloudflare Pages, Vercel,
+      Netlify all support build-time env vars). No script tag needed here.
+    -->
+    <script type="module" crossorigin src="/assets/index-wRNQr2sN.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-BJWyJLSK.css">
+  </head>
+  <body class="bg-bg text-text">
+    <script>
+      // Apply persisted theme before React mounts to avoid a flash.
+      (function () {
+        try {
+          var t = localStorage.getItem('complexity-practice:v1:theme');
+          document.documentElement.dataset.theme =
+            t === 'light' ? 'light' : 'dark';
+        } catch (_) {
+          document.documentElement.dataset.theme = 'dark';
+        }
+      })();
+    </script>
+    <div id="root">
+    <header>
+      <h1>Big O Gym</h1>
+      <p>Read the code, type the complexity, learn what trips you up.</p>
+    </header>
+    <main>
+      <h2>Free interview prep for time and space complexity analysis</h2>
+      <p>
+        Big O Gym is a free practice tool for engineers preparing for
+        technical interviews. Read a code snippet in Python or JavaScript,
+        type your guess for the time and space complexity, and get instant
+        feedback on whether you got it right, almost right (you forgot to
+        simplify), or wrong (and why).
+      </p>
+      <h3>What you'll practice</h3>
+      <ul>
+        <li>Recognizing common complexity classes — O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ).</li>
+        <li>Multivariable analysis — graph traversals (V + E), matrix problems (m · n), edit-distance (n · m).</li>
+        <li>"Looks like A but is B" twists — hidden array shifts, immutable string concatenation, doubling inner loops.</li>
+        <li>Amortized analysis — dynamic array push, LRU cache, hashmap operations.</li>
+        <li>Per-method complexity for class-shaped problems — LRU, Trie, MedianFinder.</li>
+      </ul>
+      <p>56 problems. Free. No signup.</p>
+    </main></div>
+  </body>
+</html>

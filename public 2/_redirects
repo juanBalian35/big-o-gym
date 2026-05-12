@@ -1,0 +1,4 @@
+# SPA fallback: anything that doesn't match a real file falls back to
+# index.html so client-side routes (/p/<id>) work after a hard refresh.
+# Honored by Cloudflare Pages and Netlify.
+/*  /index.html  200
