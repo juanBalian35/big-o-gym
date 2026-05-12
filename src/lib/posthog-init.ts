@@ -1,36 +1,18 @@
-// Initialize PostHog once on app boot. Safe no-op when the env var is
-// missing (e.g., local dev without a key, or before deploy).
+// PostHog is initialized by the inline snippet in index.html <head>.
+// This module just marks the flag so callers can check readiness.
 
 import posthog from 'posthog-js';
-
-const KEY = import.meta.env.VITE_POSTHOG_KEY;
-const HOST = import.meta.env.VITE_POSTHOG_HOST ?? 'https://enreversa.bigogym.io';
 
 let initialized = false;
 
 export function initPostHog(): void {
   if (initialized) return;
   if (typeof window === 'undefined') return;
-  if (!KEY) {
-    if (import.meta.env.DEV) {
-      console.info(
-        '[posthog] VITE_POSTHOG_KEY not set - analytics will console-log only.'
-      );
-    }
+  // The <head> snippet has already called posthog.init(); don't re-init.
+  if (posthog.__loaded) {
+    initialized = true;
     return;
   }
-
-  posthog.init(KEY, {
-    api_host: HOST,
-    ui_host: 'https://us.posthog.com',
-    // Don't create a "person profile" for anonymous users; we only need
-    // event counts. Cheaper on the PostHog free tier and matches the spec's
-    // "no per-user tracking" stance.
-    person_profiles: 'identified_only',
-    capture_pageview: true,
-    capture_pageleave: true,
-  });
-
   initialized = true;
 }
 
