@@ -1,0 +1,27 @@
+# Big O Gym
+
+> Free, browser-based practice tool for time and space complexity analysis (Big O notation). Built for engineers preparing for technical coding interviews. No signup, no backend, no account — progress is saved in browser localStorage.
+
+Big O Gym shows code snippets in Python or JavaScript and asks the user to type the time and space complexity. A normalizer accepts any reasonable notation — `O(n log n)`, `O(nlogn)`, `n log n`, `O(n*log(n))` — and gives instant feedback with a written explanation of the correct answer. Wrong answers are marked wrong; answers that are right in spirit but unsimplified (e.g. `O(2n)` instead of `O(n)`) are marked "almost" with a nudge to simplify.
+
+## What it covers
+
+- 60+ problems total: 54 code snippets + a handful of pure data-structure operation prompts (e.g. "hashmap lookup", "heap push")
+- Two language modes: Python and JavaScript, with language-specific complexity gotchas accounted for (e.g. `arr.shift()` is O(n) in JS, `deque.popleft()` is O(1) in Python — these get different code, same complexity question)
+- Topic coverage: arrays, hashmaps, hashsets, trees (BFS/DFS, BST), graphs, recursion, dynamic programming, memoization, sliding window, two pointers, binary search, sorting, heaps, intervals, linked lists, prefix/suffix sums, Kadane, amortized analysis, multivariable complexity
+- Difficulty tags exist internally but are not surfaced to users
+
+## Audience
+
+Engineers actively preparing for technical interviews — early-career to mid-level developers who can solve LeetCode-style problems but want to sharpen the complexity-analysis side. Not for students learning algorithms for the first time, not for senior engineers reviewing fundamentals.
+
+## Routes
+
+- [Practice](https://bigogym.io/): infinite random rotation of problems
+- [Daily problem](https://bigogym.io/daily): one curated problem per day, bookmarkable, drives a streak counter
+- [Race sets](https://bigogym.io/race): timed problem sets (sprint, classic-7, circuit, heavy-day, marathon) you can race against friends via a shareable URL
+- Individual problem URLs: `/p/<problem-id>` (shareable deep links)
+
+## Stack
+
+Vite + React + TypeScript + Tailwind, deployed as a static site. No SSR. Source: see repository on GitHub if linked from the site footer.

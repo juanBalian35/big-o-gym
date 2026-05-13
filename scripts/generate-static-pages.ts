@@ -28,6 +28,10 @@ function readableName(id: string): string {
 }
 
 function staticBodyForProblem(p: Problem): string {
+  // Breadcrumb gives crawlers a clear hop back to /, which helps internal
+  // PageRank flow and surfaces in Google's rich results.
+  const breadcrumbs = `
+      <nav aria-label="Breadcrumb"><a href="/">Big O Gym</a> &rsaquo; Problem</nav>`;
   if (p.kind === 'code') {
     const variables = p.variables
       .map(
@@ -36,30 +40,54 @@ function staticBodyForProblem(p: Problem): string {
       )
       .join('');
     return `
-    <header>
-      <h1>Big O Gym</h1>
-      <p>Read the code, type the complexity, learn what trips you up.</p>
+    <header>${breadcrumbs}
+      <h1>Big O Practice: ${escapeHtml(readableName(p.id))}</h1>
+      <p>Time and space complexity practice in Python and JavaScript. Concept tested: ${escapeHtml(p.concept)}.</p>
     </header>
     <main>
-      <h2>${escapeHtml(readableName(p.id))}</h2>
-      <p><strong>Concept:</strong> ${escapeHtml(p.concept)}</p>
       <pre><code>${escapeHtml(p.code.python)}</code></pre>
-      <h3>Variables</h3>
+      <h2>Variables</h2>
       <ul>${variables}</ul>
-      <h3>Explanation</h3>
+      <h2>Explanation</h2>
       <p>${escapeHtml(p.explanation)}</p>
+      <p><a href="/">More Big O practice problems</a> &middot; <a href="/daily">Today's daily problem</a></p>
     </main>`;
   }
   return `
-    <header>
-      <h1>Big O Gym</h1>
-      <p>Read the code, type the complexity, learn what trips you up.</p>
+    <header>${breadcrumbs}
+      <h1>Big O Quiz: ${escapeHtml(readableName(p.id))}</h1>
+      <p>${escapeHtml(p.prompt)}</p>
     </header>
     <main>
-      <h2>Data structure question</h2>
-      <p>${escapeHtml(p.prompt)}</p>
       <p><strong>Concept:</strong> ${escapeHtml(p.concept)}</p>
       <p>${escapeHtml(p.explanation)}</p>
+      <p><a href="/">More Big O practice problems</a> &middot; <a href="/daily">Today's daily problem</a></p>
+    </main>`;
+}
+
+function staticBodyForRace(): string {
+  return `
+    <header>
+      <h1>Big O Race Sets - Timed Complexity Practice</h1>
+      <p>Race a curated set of complexity problems against the clock or against a friend's time.</p>
+    </header>
+    <main>
+      <h2>How it works</h2>
+      <p>
+        Pick a set - Sprint, Classic 7, Circuit, Heavy Day, or Marathon - and
+        solve every problem back-to-back as fast as you can. Each set is a
+        fixed sequence so two runs are directly comparable. Share your time
+        as a URL; the recipient runs the same problems and races your ghost.
+      </p>
+      <h2>Sets</h2>
+      <ul>
+        <li><strong>Sprint</strong> - short and punchy, easy warmup</li>
+        <li><strong>Classic 7</strong> - seven canonical interview shapes</li>
+        <li><strong>Circuit</strong> - mixed difficulty, balanced topics</li>
+        <li><strong>Heavy Day</strong> - harder problems, longer runs</li>
+        <li><strong>Marathon</strong> - the full grind</li>
+      </ul>
+      <p><a href="/">Practice mode</a> &middot; <a href="/daily">Daily problem</a></p>
     </main>`;
 }
 
@@ -91,7 +119,26 @@ function staticBodyForDaily(): string {
     </main>`;
 }
 
-function staticBodyForHome(): string {
+function staticBodyForHome(problems: Problem[]): string {
+  // Internal links so crawlers can hop from / to /daily, /race, and a sample
+  // of per-problem pages without needing to execute the SPA. Picks a few
+  // recognizable canonical names rather than the full 60 to keep the body lean.
+  const featuredIds = [
+    'two-sum',
+    'binary-search-classic',
+    'merge-sort',
+    'number-of-islands',
+    'climbing-stairs',
+    'longest-substring-no-repeat',
+  ];
+  const featured = featuredIds
+    .map((id) => problems.find((p) => p.id === id))
+    .filter((p): p is Problem => Boolean(p))
+    .map(
+      (p) =>
+        `<li><a href="/p/${p.id}">${escapeHtml(readableName(p.id))}</a></li>`
+    )
+    .join('');
   return `
     <header>
       <h1>Big O Practice for Interviews</h1>
@@ -106,6 +153,12 @@ function staticBodyForHome(): string {
         feedback on whether you got it right, almost right (you forgot to
         simplify), or wrong (and why).
       </p>
+      <h3>Modes</h3>
+      <ul>
+        <li><a href="/">Practice</a> - infinite random rotation of the 60-problem catalog</li>
+        <li><a href="/daily">Daily problem</a> - one curated problem per day, bookmarkable, builds a streak</li>
+        <li><a href="/race">Race sets</a> - timed problem sets you can race against the clock or a friend</li>
+      </ul>
       <h3>What you'll practice</h3>
       <ul>
         <li>Recognizing common complexity classes - O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ).</li>
@@ -114,6 +167,8 @@ function staticBodyForHome(): string {
         <li>Amortized analysis - dynamic array push, LRU cache, hashmap operations.</li>
         <li>Per-method complexity for class-shaped problems - LRU, Trie, MedianFinder.</li>
       </ul>
+      <h3>Sample problems</h3>
+      <ul>${featured}</ul>
       <p>60 problems for daily Big O practice. Free. No signup.</p>
     </main>`;
 }
@@ -180,7 +235,25 @@ function jsonLdForProblem(p: Problem, url: string): string {
     },
     isAccessibleForFree: true,
   };
-  return JSON.stringify(learningResource, null, 2);
+  const breadcrumb = {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      {
+        '@type': 'ListItem',
+        position: 1,
+        name: 'Big O Gym',
+        item: SITE_ORIGIN + '/',
+      },
+      {
+        '@type': 'ListItem',
+        position: 2,
+        name: readableName(p.id),
+        item: url,
+      },
+    ],
+  };
+  return JSON.stringify([learningResource, breadcrumb], null, 2);
 }
 
 function replaceMeta(
@@ -206,7 +279,7 @@ export async function generateStaticPages(problems: Problem[]): Promise<void> {
     description:
       'Big O practice for technical interviews. Read Python or JavaScript code, type the time and space complexity, get instant feedback.',
     url: `${SITE_ORIGIN}/`,
-    body: staticBodyForHome(),
+    body: staticBodyForHome(problems),
   });
   await writeFile(join(distDir, 'index.html'), homeHtml, 'utf8');
 
@@ -221,6 +294,17 @@ export async function generateStaticPages(problems: Problem[]): Promise<void> {
   });
   await mkdir(join(distDir, 'daily'), { recursive: true });
   await writeFile(join(distDir, 'daily', 'index.html'), dailyHtml, 'utf8');
+
+  // /race - timed race sets landing page.
+  const raceHtml = applyMeta(baseHtml, {
+    title: 'Big O Race Sets - Timed Complexity Practice | Big O Gym',
+    description:
+      'Race a curated set of Big O complexity problems against the clock or against a friend. Sprint, Classic 7, Circuit, Heavy Day, or Marathon.',
+    url: `${SITE_ORIGIN}/race`,
+    body: staticBodyForRace(),
+  });
+  await mkdir(join(distDir, 'race'), { recursive: true });
+  await writeFile(join(distDir, 'race', 'index.html'), raceHtml, 'utf8');
 
   // Per-problem pages.
   for (const p of problems) {
@@ -252,6 +336,7 @@ export async function generateStaticPages(problems: Problem[]): Promise<void> {
     // /daily is the bookmarkable surface for the daily problem - changes each
     // UTC day, so worth indexing on its own (not just via the home page).
     { loc: `${SITE_ORIGIN}/daily`, priority: '0.9' },
+    { loc: `${SITE_ORIGIN}/race`, priority: '0.6' },
     ...problems.map((p) => ({
       loc: `${SITE_ORIGIN}/p/${p.id}`,
       priority: '0.7',
